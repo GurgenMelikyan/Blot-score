@@ -6,10 +6,10 @@ include(qt.cmake)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core QuickControls2)
 find_package(Qt${QT_VERSION_MAJOR}
     COMPONENTS
-        Quick
+        Quick QuickControls2
 )
 qt_standard_project_setup()
 
@@ -29,7 +29,7 @@ if(QT_VERSION VERSION_GREATER_EQUAL 6.2)
         VERSION 1.0
         RESOURCE_PREFIX "/qt/qml/"
         QML_FILES
-            main.qml
+            main.qml qml_resources/ScoreInput.qml qml_resources/ScoreName.qml
     )
 endif()
 
@@ -40,7 +40,7 @@ set_target_properties(app
 
 target_link_libraries(app
     PUBLIC
-        Qt::Quick
+        Qt::Quick Qt6::QuickControls2
 )
 
 if(Qt6_FOUND)
