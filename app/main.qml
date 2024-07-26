@@ -191,4 +191,111 @@ ApplicationWindow {
             }
         }
     }
+    
+    footer: Rectangle {
+
+        width: appWindow.width
+        height: Math.max(appWindow.height / 10, 50)
+        color: (Universal.theme == Universal.Light ? "light" : "dark") + "blue"
+        Universal.theme: Universal.System
+
+        RowLayout {
+            anchors.fill: parent
+            //first row
+            ScoreInput { //first score
+                Layout.preferredWidth: appWindow.width / 3
+                Layout.preferredHeight: appWindow.height / 20
+                Layout.minimumWidth: 38
+                Layout.minimumHeight: 25
+                minimalValue: 0
+                maximalValue: 162
+            }
+            ScoreInput { //first declarations
+                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
+                Layout.preferredHeight: appWindow.height / 20
+                Layout.minimumWidth: 38
+                Layout.minimumHeight: 25
+                minimalValue: 0
+                maximalValue: 200
+            }
+            ScoreInput { //second score
+                Layout.preferredWidth: appWindow.width / 3
+                Layout.preferredHeight: appWindow.height / 20
+                Layout.minimumWidth: 38
+                Layout.minimumHeight: 25
+                minimalValue: 0
+                maximalValue: 162
+            }
+            ScoreInput { //second declarations
+                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
+                Layout.preferredHeight: appWindow.height / 20
+                Layout.minimumWidth: 38
+                Layout.minimumHeight: 25
+                minimalValue: 0
+                maximalValue: 200
+            }
+            Item { //filler
+                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
+                Layout.preferredHeight: appWindow.height / 20
+                Layout.minimumWidth: 10
+                Layout.minimumHeight: 25
+            }
+            ScoreInput { //bid
+                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
+                Layout.preferredHeight: appWindow.height / 20
+                Layout.minimumWidth: 38
+                Layout.minimumHeight: 25
+                minimalValue: 8
+                maximalValue: 200
+            }
+            Button { //capot
+                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
+                Layout.preferredHeight: appWindow.height / 20
+                Layout.minimumWidth: 25
+                Layout.minimumHeight: 25
+                text: 'K'
+                font.pixelSize: Math.min(height, width) / 2.1
+                checkable: true
+            }
+            ComboBox { //contras
+                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
+                Layout.preferredHeight: appWindow.height / 20
+                Layout.minimumWidth: 40
+                Layout.minimumHeight: 25
+                indicator: Item{}
+                leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
+                font.pixelSize: Math.min(height, width) / 2.1
+                model: [" -", "Q", " S"] // there are some spaces for somewhat correct padding
+            }
+            ComboBox { //trump
+                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
+                Layout.preferredHeight: appWindow.height / 20
+                Layout.minimumWidth: 45
+                Layout.minimumHeight: 25
+                indicator: Item{}
+                leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
+                font.pixelSize: Math.min(height, width) / 2.1
+                model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
+            }
+            Item { //filler
+                Layout.fillWidth: true
+                Layout.preferredHeight: appWindow.height / 20
+                Layout.minimumHeight: 25
+            }
+            RoundButton { // add button
+                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
+                Layout.preferredHeight: appWindow.height / 20
+                Layout.minimumWidth: 25
+                Layout.minimumHeight: 25
+                text: '+'
+                font.pixelSize: Math.min(height, width) / 2.1
+                highlighted: true
+            }
+            Item { //filler
+                Layout.minimumWidth: 10
+                Layout.preferredHeight: appWindow.height / 20
+                Layout.minimumHeight: 25
+            }
+        }
+    }
 }
