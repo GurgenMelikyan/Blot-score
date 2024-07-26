@@ -3,9 +3,16 @@ import QtQuick.Controls
 import QtQuick.Controls.Universal
 
 TextField {
+    id: root
     required property int minimalValue
     required property int maximalValue
     Universal.theme: Universal.System
+    Binding {
+        target: root
+        property: "color"
+        when: !acceptableInput
+        value: "red"
+    }
     font.pixelSize: Math.min(height, width) / 2.6
     horizontalAlignment: TextField.AlignHCenter
     verticalAlignment: TextField.AlignVCenter

@@ -197,6 +197,7 @@ ApplicationWindow {
                     leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
                     font.pixelSize: Math.min(height, width) / 2.1
                     model: [" -", "Q", " S"] // there are some spaces for somewhat correct padding
+                    currentIndex: Math.log2(scores.modifier)
                     Binding {
                         target: scores
                         property: "modifier"
@@ -213,6 +214,7 @@ ApplicationWindow {
                     leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
                     font.pixelSize: Math.min(height, width) / 2.1
                     model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
+                    currentIndex: scores.trump
                     Binding {
                         target: scores
                         property: "trump"
@@ -239,6 +241,7 @@ ApplicationWindow {
             anchors.fill: parent
             //first row
             ScoreInput { //first score
+                id: currentFirstScore
                 Layout.preferredWidth: appWindow.width / 3
                 Layout.preferredHeight: appWindow.height / 20
                 Layout.minimumWidth: 38
@@ -247,14 +250,17 @@ ApplicationWindow {
                 maximalValue: 162
             }
             ScoreInput { //first declarations
+                id: currentFirstDeclarations
                 Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                 Layout.preferredHeight: appWindow.height / 20
                 Layout.minimumWidth: 38
                 Layout.minimumHeight: 25
                 minimalValue: 0
                 maximalValue: 200
+                text: '0'
             }
             ScoreInput { //second score
+                id: currentSecondScore
                 Layout.preferredWidth: appWindow.width / 3
                 Layout.preferredHeight: appWindow.height / 20
                 Layout.minimumWidth: 38
@@ -263,12 +269,14 @@ ApplicationWindow {
                 maximalValue: 162
             }
             ScoreInput { //second declarations
+                id: currentSecondDeclarations
                 Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                 Layout.preferredHeight: appWindow.height / 20
                 Layout.minimumWidth: 38
                 Layout.minimumHeight: 25
                 minimalValue: 0
                 maximalValue: 200
+                text: '0'
             }
             Item { //filler
                 Layout.preferredWidth: Math.min(appWindow.width / 22, height)
@@ -277,6 +285,7 @@ ApplicationWindow {
                 Layout.minimumHeight: 25
             }
             ScoreInput { //bid
+                id: currentBid
                 Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                 Layout.preferredHeight: appWindow.height / 20
                 Layout.minimumWidth: 38
@@ -285,6 +294,7 @@ ApplicationWindow {
                 maximalValue: 200
             }
             Button { //capot
+                id: currentCapotStatus
                 Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                 Layout.preferredHeight: appWindow.height / 20
                 Layout.minimumWidth: 25
@@ -294,6 +304,7 @@ ApplicationWindow {
                 checkable: true
             }
             ComboBox { //contras
+                id: currentModifier
                 Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                 Layout.preferredHeight: appWindow.height / 20
                 Layout.minimumWidth: 40
@@ -304,6 +315,7 @@ ApplicationWindow {
                 model: [" -", "Q", " S"] // there are some spaces for somewhat correct padding
             }
             ComboBox { //trump
+                id: currentTrump
                 Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                 Layout.preferredHeight: appWindow.height / 20
                 Layout.minimumWidth: 45
@@ -326,6 +338,25 @@ ApplicationWindow {
                 text: '+'
                 font.pixelSize: Math.min(height, width) / 2.1
                 highlighted: true
+                onClicked: {
+                    if(currentFirstScore.acceptableInput &&
+                        currentFirstDeclarations.acceptableInput &&
+                        currentSecondScore.acceptableInput &&
+                        currentSecondDeclarations.acceptableInput &&
+                        currentBid.acceptableInput)
+                    {
+                        gameModel.append({
+                            "firstScore": Number.fromLocaleString(currentFirstScore.text),
+                            "firstDeclarations": Number.fromLocaleString(currentFirstDeclarations.text),
+                            "secondScore": Number.fromLocaleString(currentSecondScore.text),
+                            "secondDeclarations": Number.fromLocaleString(currentSecondDeclarations.text),
+                            "bid": Number.fromLocaleString(currentBid.text),
+                            "isCapot":  currentCapotStatus.checked,
+                            "modifier": Math.pow(2, currentModifier.currentIndex),
+                            "trump": currentTrump.currentIndex
+                        })
+                    }
+                }
             }
             Item { //filler
                 Layout.minimumWidth: 10
