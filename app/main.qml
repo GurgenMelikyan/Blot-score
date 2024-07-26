@@ -161,7 +161,7 @@ ApplicationWindow {
                     font.pixelSize: Math.min(height, width) / 2.1
                     checkable: true
                     checked: scores.isCapot
-                    onClicked: {scores.isCapot ^= true; console.log(scores.isCapot)}
+                    onClicked: { scores.isCapot ^= true }
                 }
                 ComboBox { //contras
                     Layout.preferredWidth: Math.min(appWindow.width / 22, height)
