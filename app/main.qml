@@ -11,13 +11,6 @@ ApplicationWindow {
     width: 640
     height: 480
     title: "Բլոտի հաշիվ"
-    enum Suits {
-        Heart,
-        Spade,
-        Diamond,
-        Club,
-        NoTrump
-    }
     ListModel {
         id: gameModel
         ListElement {
@@ -102,6 +95,7 @@ ApplicationWindow {
                 anchors.fill: parent
                 //first row
                 ScoreInput { //first score
+                    id: firstScoreInput
                     Layout.preferredWidth: appWindow.width / 3
                     Layout.preferredHeight: appWindow.height / 20
                     Layout.minimumWidth: 38
@@ -109,8 +103,14 @@ ApplicationWindow {
                     minimalValue: 0
                     maximalValue: 162
                     text: scores.firstScore
+                    Binding {
+                        target: scores
+                        property: "firstScore"
+                        value: firstScoreInput.text
+                    }
                 }
                 ScoreInput { //first declarations
+                    id: firstDeclarationsInput
                     Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                     Layout.preferredHeight: appWindow.height / 20
                     Layout.minimumWidth: 38
@@ -118,8 +118,14 @@ ApplicationWindow {
                     minimalValue: 0
                     maximalValue: 200
                     text: scores.firstDeclarations
+                    Binding {
+                        target: scores
+                        property: "firstDeclarations"
+                        value: firstDeclarationsInput.text
+                    }
                 }
                 ScoreInput { //second score
+                    id: secondScoreInput
                     Layout.preferredWidth: appWindow.width / 3
                     Layout.preferredHeight: appWindow.height / 20
                     Layout.minimumWidth: 38
@@ -127,8 +133,14 @@ ApplicationWindow {
                     minimalValue: 0
                     maximalValue: 162
                     text: scores.secondScore
+                    Binding {
+                        target: scores
+                        property: "secondScore"
+                        value: secondScoreInput.text
+                    }
                 }
                 ScoreInput { //second declarations
+                    id: secondDeclarationsInput
                     Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                     Layout.preferredHeight: appWindow.height / 20
                     Layout.minimumWidth: 38
@@ -136,6 +148,11 @@ ApplicationWindow {
                     minimalValue: 0
                     maximalValue: 200
                     text: scores.secondDeclarations
+                    Binding {
+                        target: scores
+                        property: "secondDeclarations"
+                        value: secondDeclarationsInput.text
+                    }
                 }
                 Item { //filler
                     Layout.preferredWidth: Math.min(appWindow.width / 22, height)
@@ -144,6 +161,7 @@ ApplicationWindow {
                     Layout.minimumHeight: 25
                 }
                 ScoreInput { //bid
+                    id: bidInput
                     Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                     Layout.preferredHeight: appWindow.height / 20
                     Layout.minimumWidth: 38
@@ -151,8 +169,14 @@ ApplicationWindow {
                     minimalValue: 8
                     maximalValue: 200
                     text: scores.bid
+                    Binding {
+                        target: scores
+                        property: "bid"
+                        value: bidInput.text
+                    }
                 }
                 Button { //capot
+                    id: capotInput
                     Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                     Layout.preferredHeight: appWindow.height / 20
                     Layout.minimumWidth: 25
@@ -164,6 +188,7 @@ ApplicationWindow {
                     onClicked: { scores.isCapot ^= true }
                 }
                 ComboBox { //contras
+                    id: contrasInput
                     Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                     Layout.preferredHeight: appWindow.height / 20
                     Layout.minimumWidth: 40
@@ -172,8 +197,14 @@ ApplicationWindow {
                     leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
                     font.pixelSize: Math.min(height, width) / 2.1
                     model: [" -", "Q", " S"] // there are some spaces for somewhat correct padding
+                    Binding {
+                        target: scores
+                        property: "modifier"
+                        value: Math.pow(2, contrasInput.currentIndex)
+                    }
                 }
                 ComboBox { //trump
+                    id: trumpInput
                     Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                     Layout.preferredHeight: appWindow.height / 20
                     Layout.minimumWidth: 45
@@ -182,6 +213,11 @@ ApplicationWindow {
                     leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
                     font.pixelSize: Math.min(height, width) / 2.1
                     model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
+                    Binding {
+                        target: scores
+                        property: "trump"
+                        value: trumpInput.currentIndex
+                    }
                 }
                 Item { //filler
                     Layout.fillWidth: true
