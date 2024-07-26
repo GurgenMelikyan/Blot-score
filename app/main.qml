@@ -103,10 +103,12 @@ ApplicationWindow {
             required property int trump
             required property bool isCapot
             required property int modifier
+
+            height: Math.max(scores.ListView.view.height / 10, 50)
+            width: scores.ListView.view.width
         
             RowLayout {
-                height: Math.max(scores.ListView.view.height / 10, 50)
-                width: scores.ListView.view.width
+                anchors.fill: parent
                 //first row
                 ScoreInput { //first score
                     Layout.preferredWidth: appWindow.width / 3
@@ -144,7 +146,7 @@ ApplicationWindow {
                     maximalValue: 200
                     text: scores.secondDeclarations
                 }
-                Item {  //filler
+                Item { //filler
                     Layout.preferredWidth: Math.min(appWindow.width / 22, height)
                     Layout.preferredHeight: appWindow.height / 20
                     Layout.minimumWidth: 10
