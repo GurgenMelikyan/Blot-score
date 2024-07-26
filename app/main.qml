@@ -31,14 +31,10 @@ ApplicationWindow {
             modifier: 4
         }
     }
-    RowLayout {
+    header: RowLayout {
         id: namesOfScores
-        anchors {
-            left: appWindow.left
-            right: appWindow.right
-            top: appWindow.top
-        }
-        height: Math.max(appWindow.height / 20, 50)
+        width: appWindow.width
+        height: Math.max(appWindow.height / 10, 50)
         ScoreName {
             Layout.preferredWidth: appWindow.width / 3
             Layout.preferredHeight: appWindow.height / 20
@@ -86,12 +82,7 @@ ApplicationWindow {
         }
     }
     ListView {
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-            top: namesOfScores.bottom
-        }
+        anchors.fill: parent
         model: gameModel
         delegate: Item {
             id: scores
