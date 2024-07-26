@@ -1,4 +1,4 @@
-﻿import QtQuick 2.9
+﻿import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Universal
 import QtQuick.Layouts
@@ -90,7 +90,6 @@ ApplicationWindow {
 
             height: Math.max(scores.ListView.view.height / 10, 50)
             width: scores.ListView.view.width
-        
             RowLayout {
                 anchors.fill: parent
                 //first row
@@ -102,11 +101,20 @@ ApplicationWindow {
                     Layout.minimumHeight: 25
                     minimalValue: 0
                     maximalValue: 162
-                    text: scores.firstScore
+                    Component.onCompleted: {
+                        text = scores.firstScore
+                    }
                     Binding {
                         target: scores
                         property: "firstScore"
                         value: firstScoreInput.text
+                        when: firstScoreInput.acceptableInput
+                    }
+                    Binding {
+                        target: secondScoreInput
+                        property: "text"
+                        value:  162 - firstScoreInput.text
+                        when: firstScoreInput.acceptableInput
                     }
                 }
                 ScoreInput { //first declarations
@@ -132,11 +140,20 @@ ApplicationWindow {
                     Layout.minimumHeight: 25
                     minimalValue: 0
                     maximalValue: 162
-                    text: scores.secondScore
+                    Component.onCompleted: {
+                        text = scores.secondScore
+                    }
                     Binding {
                         target: scores
                         property: "secondScore"
                         value: secondScoreInput.text
+                        when: secondScoreInput.acceptableInput
+                    }
+                    Binding {
+                        target: firstScoreInput
+                        property: "text"
+                        value: 162 - secondScoreInput.text
+                        when: secondScoreInput.acceptableInput
                     }
                 }
                 ScoreInput { //second declarations
@@ -248,6 +265,12 @@ ApplicationWindow {
                 Layout.minimumHeight: 25
                 minimalValue: 0
                 maximalValue: 162
+                Binding {
+                    target: currentSecondScore
+                    property: "text"
+                    value:  162 - currentFirstScore.text
+                    when: currentFirstScore.acceptableInput
+                }
             }
             ScoreInput { //first declarations
                 id: currentFirstDeclarations
@@ -267,6 +290,12 @@ ApplicationWindow {
                 Layout.minimumHeight: 25
                 minimalValue: 0
                 maximalValue: 162
+                Binding {
+                    target: currentFirstScore
+                    property: "text"
+                    value:  162 - currentSecondScore.text
+                    when: currentSecondScore.acceptableInput
+                }
             }
             ScoreInput { //second declarations
                 id: currentSecondDeclarations
