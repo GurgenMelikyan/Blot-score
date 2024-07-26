@@ -17,6 +17,5 @@ Item {
         horizontalAlignment: TextArea.AlignHCenter
         verticalAlignment: TextArea.AlignVCenter
         font.pixelSize: Math.min(parent.height, parent.width) / 3
-        wrapMode: TextArea.WordWrap
     }
 }
