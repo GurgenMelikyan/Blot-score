@@ -25,6 +25,7 @@ ApplicationWindow {
             firstDeclarations: 5
             secondScore: 152
             secondDeclarations: 2
+            teamThatDeclaredContract: 0
             bid: 13
             trump: 1
             isCapot: true
@@ -90,6 +91,7 @@ ApplicationWindow {
             required property int firstDeclarations
             required property int secondScore
             required property int secondDeclarations
+            required property int teamThatDeclaredContract
             required property int bid
             required property int trump
             required property bool isCapot
@@ -185,6 +187,24 @@ ApplicationWindow {
                     Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: 10
                     Layout.minimumHeight: appWindow.minimumScoreHeight
+                }
+                ComboBox { //Team that declared contract
+                    id: teamInput
+                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 55
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    indicator: Item{}
+                    font.pixelSize: Math.min(height, width) / 2.6
+                    currentIndex: scores.teamThatDeclaredContract
+                    Text { id: selectedTeam; text: parent.currentText; color: "transparent" } // to get size of the team's name
+                    leftPadding: (width - selectedTeam.implicitWidth) / 2 - ((width - height < 10) ? 20 : 10) // to center options
+                    model: ["Մենք", "Դուք"]
+                    Binding {
+                        target: scores
+                        property: "teamThatDeclaredContract"
+                        value: teamInput.currentIndex
+                    }
                 }
                 ScoreInput { //bid
                     id: bidInput
@@ -322,6 +342,18 @@ ApplicationWindow {
                 Layout.minimumWidth: 10
                 Layout.minimumHeight: appWindow.minimumScoreHeight
             }
+            ComboBox { //Team that declared contract
+                id: currentTeamInput
+                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.preferredHeight: appWindow.scoreHeight
+                Layout.minimumWidth: 55
+                Layout.minimumHeight: appWindow.minimumScoreHeight
+                indicator: Item{}
+                font.pixelSize: Math.min(height, width) / 2.6
+                Text { id: selectedTeam; text: parent.currentText; color: "transparent" } // to get size of the team's name
+                leftPadding: (width - selectedTeam.implicitWidth) / 2 - ((width - height < 10) ? 20 : 10) // to center options
+                model: ["Մենք", "Դուք"]
+            }
             ScoreInput { //bid
                 id: currentBid
                 Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
@@ -388,6 +420,7 @@ ApplicationWindow {
                             "firstDeclarations": Number.fromLocaleString(currentFirstDeclarations.text),
                             "secondScore": Number.fromLocaleString(currentSecondScore.text),
                             "secondDeclarations": Number.fromLocaleString(currentSecondDeclarations.text),
+                            "teamThatDeclaredContract": currentTeamInput.currentIndex,
                             "bid": Number.fromLocaleString(currentBid.text),
                             "isCapot":  currentCapotStatus.checked,
                             "modifier": Math.pow(2, currentModifier.currentIndex),
