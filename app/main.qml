@@ -11,6 +11,13 @@ ApplicationWindow {
     width: 640
     height: 480
     title: "Բլոտի հաշիվ"
+
+    property int largeScoreWidth: width / 3
+    property int smallScoreWidth: width / 25
+    property int scoreHeight: height / 20
+    property int minimumScoreWidth: 38
+    property int minimumScoreHeight: 25
+
     ListModel {
         id: gameModel
         ListElement {
@@ -27,51 +34,51 @@ ApplicationWindow {
     header: RowLayout {
         id: namesOfScores
         width: appWindow.width
-        height: Math.max(appWindow.height / 10, 50)
+        height: Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
         ScoreName {
-            Layout.preferredWidth: appWindow.width / 3
-            Layout.preferredHeight: appWindow.height / 20
-            Layout.minimumWidth: 38
-            Layout.minimumHeight: 50
+            Layout.preferredWidth: appWindow.largeScoreWidth
+            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.minimumWidth: appWindow.minimumScoreWidth
+            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             text: "Մենք"
         }
         ScoreName {
-            Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-            Layout.preferredHeight: appWindow.height / 20
+            Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+            Layout.preferredHeight: appWindow.scoreHeight
             Layout.minimumWidth: 50
-            Layout.minimumHeight: 50
+            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             text: "Դրսից1"
         }
         ScoreName {
-            Layout.preferredWidth: appWindow.width / 3
-            Layout.preferredHeight: appWindow.height / 20
-            Layout.minimumWidth: 38
-            Layout.minimumHeight: 50
+            Layout.preferredWidth: appWindow.largeScoreWidth
+            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.minimumWidth: appWindow.minimumScoreWidth
+            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             text: "Դուք"
         }
         ScoreName {
-            Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-            Layout.preferredHeight: appWindow.height / 20
+            Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+            Layout.preferredHeight: appWindow.scoreHeight
             Layout.minimumWidth: 50
-            Layout.minimumHeight: 50
+            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             text: "Դրսից2"
         }
         Item {  //filler
-            Layout.preferredWidth: Math.min(appWindow.width / 22, height)
+            Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
             Layout.minimumWidth: 10
-            Layout.preferredHeight: appWindow.height / 20
+            Layout.preferredHeight: appWindow.scoreHeight
         }
         ScoreName {
-            Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-            Layout.preferredHeight: appWindow.height / 20
+            Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+            Layout.preferredHeight: appWindow.scoreHeight
             Layout.minimumWidth: 50
-            Layout.minimumHeight: 50
+            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             text: "Խոսացած"
         }
         Item { //filler
             Layout.fillWidth: true
-            Layout.preferredHeight: appWindow.height / 20
-            Layout.minimumHeight: 50
+            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
         }
     }
     ListView {
@@ -88,17 +95,19 @@ ApplicationWindow {
             required property bool isCapot
             required property int modifier
 
-            height: Math.max(scores.ListView.view.height / 10, 50)
-            width: scores.ListView.view.width
+            height: Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
+            width: appWindow.width
+
             RowLayout {
                 anchors.fill: parent
+
                 //first row
                 ScoreInput { //first score
                     id: firstScoreInput
-                    Layout.preferredWidth: appWindow.width / 3
-                    Layout.preferredHeight: appWindow.height / 20
-                    Layout.minimumWidth: 38
-                    Layout.minimumHeight: 25
+                    Layout.preferredWidth: appWindow.largeScoreWidth
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
                     minimalValue: 0
                     maximalValue: 162
                     Component.onCompleted: {
@@ -119,10 +128,10 @@ ApplicationWindow {
                 }
                 ScoreInput { //first declarations
                     id: firstDeclarationsInput
-                    Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                    Layout.preferredHeight: appWindow.height / 20
-                    Layout.minimumWidth: 38
-                    Layout.minimumHeight: 25
+                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
                     minimalValue: 0
                     maximalValue: 200
                     text: scores.firstDeclarations
@@ -134,10 +143,10 @@ ApplicationWindow {
                 }
                 ScoreInput { //second score
                     id: secondScoreInput
-                    Layout.preferredWidth: appWindow.width / 3
-                    Layout.preferredHeight: appWindow.height / 20
-                    Layout.minimumWidth: 38
-                    Layout.minimumHeight: 25
+                    Layout.preferredWidth: appWindow.largeScoreWidth
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
                     minimalValue: 0
                     maximalValue: 162
                     Component.onCompleted: {
@@ -158,10 +167,10 @@ ApplicationWindow {
                 }
                 ScoreInput { //second declarations
                     id: secondDeclarationsInput
-                    Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                    Layout.preferredHeight: appWindow.height / 20
-                    Layout.minimumWidth: 38
-                    Layout.minimumHeight: 25
+                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
                     minimalValue: 0
                     maximalValue: 200
                     text: scores.secondDeclarations
@@ -172,17 +181,17 @@ ApplicationWindow {
                     }
                 }
                 Item { //filler
-                    Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                    Layout.preferredHeight: appWindow.height / 20
+                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: 10
-                    Layout.minimumHeight: 25
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
                 }
                 ScoreInput { //bid
                     id: bidInput
-                    Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                    Layout.preferredHeight: appWindow.height / 20
-                    Layout.minimumWidth: 38
-                    Layout.minimumHeight: 25
+                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
                     minimalValue: 8
                     maximalValue: 200
                     text: scores.bid
@@ -194,10 +203,10 @@ ApplicationWindow {
                 }
                 Button { //capot
                     id: capotInput
-                    Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                    Layout.preferredHeight: appWindow.height / 20
+                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: 25
-                    Layout.minimumHeight: 25
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
                     text: 'K'
                     font.pixelSize: Math.min(height, width) / 2.1
                     checkable: true
@@ -206,10 +215,10 @@ ApplicationWindow {
                 }
                 ComboBox { //contras
                     id: contrasInput
-                    Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                    Layout.preferredHeight: appWindow.height / 20
+                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: 40
-                    Layout.minimumHeight: 25
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
                     indicator: Item{}
                     leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
                     font.pixelSize: Math.min(height, width) / 2.1
@@ -223,10 +232,10 @@ ApplicationWindow {
                 }
                 ComboBox { //trump
                     id: trumpInput
-                    Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                    Layout.preferredHeight: appWindow.height / 20
+                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: 45
-                    Layout.minimumHeight: 25
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
                     indicator: Item{}
                     leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
                     font.pixelSize: Math.min(height, width) / 2.1
@@ -240,8 +249,8 @@ ApplicationWindow {
                 }
                 Item { //filler
                     Layout.fillWidth: true
-                    Layout.preferredHeight: appWindow.height / 20
-                    Layout.minimumHeight: 25
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
                 }
             }
         }
@@ -250,7 +259,7 @@ ApplicationWindow {
     footer: Rectangle {
 
         width: appWindow.width
-        height: Math.max(appWindow.height / 10, 50)
+        height: Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
         color: (Universal.theme == Universal.Light ? "light" : "dark") + "blue"
         Universal.theme: Universal.System
 
@@ -259,10 +268,10 @@ ApplicationWindow {
             //first row
             ScoreInput { //first score
                 id: currentFirstScore
-                Layout.preferredWidth: appWindow.width / 3
-                Layout.preferredHeight: appWindow.height / 20
-                Layout.minimumWidth: 38
-                Layout.minimumHeight: 25
+                Layout.preferredWidth: appWindow.largeScoreWidth
+                Layout.preferredHeight: appWindow.scoreHeight
+                Layout.minimumWidth: appWindow.minimumScoreWidth
+                Layout.minimumHeight: appWindow.minimumScoreHeight
                 minimalValue: 0
                 maximalValue: 162
                 Binding {
@@ -274,20 +283,20 @@ ApplicationWindow {
             }
             ScoreInput { //first declarations
                 id: currentFirstDeclarations
-                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                Layout.preferredHeight: appWindow.height / 20
-                Layout.minimumWidth: 38
-                Layout.minimumHeight: 25
+                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.preferredHeight: appWindow.scoreHeight
+                Layout.minimumWidth: appWindow.minimumScoreWidth
+                Layout.minimumHeight: appWindow.minimumScoreHeight
                 minimalValue: 0
                 maximalValue: 200
                 text: '0'
             }
             ScoreInput { //second score
                 id: currentSecondScore
-                Layout.preferredWidth: appWindow.width / 3
-                Layout.preferredHeight: appWindow.height / 20
-                Layout.minimumWidth: 38
-                Layout.minimumHeight: 25
+                Layout.preferredWidth: appWindow.largeScoreWidth
+                Layout.preferredHeight: appWindow.scoreHeight
+                Layout.minimumWidth: appWindow.minimumScoreWidth
+                Layout.minimumHeight: appWindow.minimumScoreHeight
                 minimalValue: 0
                 maximalValue: 162
                 Binding {
@@ -299,45 +308,45 @@ ApplicationWindow {
             }
             ScoreInput { //second declarations
                 id: currentSecondDeclarations
-                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                Layout.preferredHeight: appWindow.height / 20
-                Layout.minimumWidth: 38
-                Layout.minimumHeight: 25
+                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.preferredHeight: appWindow.scoreHeight
+                Layout.minimumWidth: appWindow.minimumScoreWidth
+                Layout.minimumHeight: appWindow.minimumScoreHeight
                 minimalValue: 0
                 maximalValue: 200
                 text: '0'
             }
             Item { //filler
-                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                Layout.preferredHeight: appWindow.height / 20
+                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: 10
-                Layout.minimumHeight: 25
+                Layout.minimumHeight: appWindow.minimumScoreHeight
             }
             ScoreInput { //bid
                 id: currentBid
-                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                Layout.preferredHeight: appWindow.height / 20
-                Layout.minimumWidth: 38
-                Layout.minimumHeight: 25
+                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.preferredHeight: appWindow.scoreHeight
+                Layout.minimumWidth: appWindow.minimumScoreWidth
+                Layout.minimumHeight: appWindow.minimumScoreHeight
                 minimalValue: 8
                 maximalValue: 200
             }
             Button { //capot
                 id: currentCapotStatus
-                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                Layout.preferredHeight: appWindow.height / 20
+                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: 25
-                Layout.minimumHeight: 25
+                Layout.minimumHeight: appWindow.minimumScoreHeight
                 text: 'K'
                 font.pixelSize: Math.min(height, width) / 2.1
                 checkable: true
             }
             ComboBox { //contras
                 id: currentModifier
-                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                Layout.preferredHeight: appWindow.height / 20
+                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: 40
-                Layout.minimumHeight: 25
+                Layout.minimumHeight: appWindow.minimumScoreHeight
                 indicator: Item{}
                 leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
                 font.pixelSize: Math.min(height, width) / 2.1
@@ -345,10 +354,10 @@ ApplicationWindow {
             }
             ComboBox { //trump
                 id: currentTrump
-                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                Layout.preferredHeight: appWindow.height / 20
+                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: 45
-                Layout.minimumHeight: 25
+                Layout.minimumHeight: appWindow.minimumScoreHeight
                 indicator: Item{}
                 leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
                 font.pixelSize: Math.min(height, width) / 2.1
@@ -356,14 +365,14 @@ ApplicationWindow {
             }
             Item { //filler
                 Layout.fillWidth: true
-                Layout.preferredHeight: appWindow.height / 20
-                Layout.minimumHeight: 25
+                Layout.preferredHeight: appWindow.scoreHeight
+                Layout.minimumHeight: appWindow.minimumScoreHeight
             }
             RoundButton { // add button
-                Layout.preferredWidth: Math.min(appWindow.width / 22, height)
-                Layout.preferredHeight: appWindow.height / 20
+                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: 25
-                Layout.minimumHeight: 25
+                Layout.minimumHeight: appWindow.minimumScoreHeight
                 text: '+'
                 font.pixelSize: Math.min(height, width) / 2.1
                 highlighted: true
@@ -389,8 +398,8 @@ ApplicationWindow {
             }
             Item { //filler
                 Layout.minimumWidth: 10
-                Layout.preferredHeight: appWindow.height / 20
-                Layout.minimumHeight: 25
+                Layout.preferredHeight: appWindow.scoreHeight
+                Layout.minimumHeight: appWindow.minimumScoreHeight
             }
         }
     }
