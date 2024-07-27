@@ -12,8 +12,8 @@ ApplicationWindow {
     height: 480
     title: "Բլոտի հաշիվ"
 
-    property int largeScoreWidth: width / 3
-    property int smallScoreWidth: width / 25
+    property int largeScoreFactor: 28
+    property int smallScoreFactor: 3
     property int scoreHeight: height / 20
     property int minimumScoreWidth: 38
     property int minimumScoreHeight: 25
@@ -37,44 +37,86 @@ ApplicationWindow {
         width: appWindow.width
         height: Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
         ScoreName {
-            Layout.preferredWidth: appWindow.largeScoreWidth
+            Layout.fillWidth: true
+            Layout.horizontalStretchFactor: largeScoreFactor
             Layout.preferredHeight: appWindow.scoreHeight
             Layout.minimumWidth: appWindow.minimumScoreWidth
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             text: "Մենք"
         }
         ScoreName {
-            Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+            Layout.fillWidth: true
+            Layout.horizontalStretchFactor: smallScoreFactor
             Layout.preferredHeight: appWindow.scoreHeight
             Layout.minimumWidth: 50
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
+            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
             text: "Դրսից1"
         }
         ScoreName {
-            Layout.preferredWidth: appWindow.largeScoreWidth
+            Layout.fillWidth: true
+            Layout.horizontalStretchFactor: largeScoreFactor
             Layout.preferredHeight: appWindow.scoreHeight
             Layout.minimumWidth: appWindow.minimumScoreWidth
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             text: "Դուք"
         }
         ScoreName {
-            Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+            Layout.fillWidth: true
+            Layout.horizontalStretchFactor: smallScoreFactor
             Layout.preferredHeight: appWindow.scoreHeight
             Layout.minimumWidth: 50
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
+            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
             text: "Դրսից2"
         }
         Item {  //filler
-            Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+            Layout.fillWidth: true
+            Layout.horizontalStretchFactor: smallScoreFactor
             Layout.minimumWidth: 10
             Layout.preferredHeight: appWindow.scoreHeight
+            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
+        }
+        Item { // team filler
+            Layout.fillWidth: true
+            Layout.horizontalStretchFactor: smallScoreFactor
+            Layout.minimumWidth: 50
+            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
+            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
+        }
+        Item { // bid filler
+            Layout.fillWidth: true
+            Layout.horizontalStretchFactor: smallScoreFactor
+            Layout.minimumWidth: appWindow.minimumScoreWidth
+            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
+            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
         }
         ScoreName {
-            Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+            Layout.fillWidth: true
+            Layout.horizontalStretchFactor: smallScoreFactor
             Layout.preferredHeight: appWindow.scoreHeight
             Layout.minimumWidth: 50
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
+            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
             text: "Խոսացած"
+        }
+        Item { // contras filler
+            Layout.fillWidth: true
+            Layout.horizontalStretchFactor: smallScoreFactor
+            Layout.minimumWidth: 40
+            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
+            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
+        }
+        Item { // trump filler
+            Layout.fillWidth: true
+            Layout.horizontalStretchFactor: smallScoreFactor
+            Layout.minimumWidth: 45
+            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
+            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
         }
         Item { //filler
             Layout.fillWidth: true
@@ -106,7 +148,8 @@ ApplicationWindow {
                 //first row
                 ScoreInput { //first score
                     id: firstScoreInput
-                    Layout.preferredWidth: appWindow.largeScoreWidth
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: largeScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: appWindow.minimumScoreWidth
                     Layout.minimumHeight: appWindow.minimumScoreHeight
@@ -130,10 +173,12 @@ ApplicationWindow {
                 }
                 ScoreInput { //first declarations
                     id: firstDeclarationsInput
-                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: appWindow.minimumScoreWidth
                     Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     minimalValue: 0
                     maximalValue: 200
                     text: scores.firstDeclarations
@@ -145,7 +190,8 @@ ApplicationWindow {
                 }
                 ScoreInput { //second score
                     id: secondScoreInput
-                    Layout.preferredWidth: appWindow.largeScoreWidth
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: largeScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: appWindow.minimumScoreWidth
                     Layout.minimumHeight: appWindow.minimumScoreHeight
@@ -169,10 +215,12 @@ ApplicationWindow {
                 }
                 ScoreInput { //second declarations
                     id: secondDeclarationsInput
-                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: appWindow.minimumScoreWidth
                     Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     minimalValue: 0
                     maximalValue: 200
                     text: scores.secondDeclarations
@@ -183,17 +231,21 @@ ApplicationWindow {
                     }
                 }
                 Item { //filler
-                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: 10
                     Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                 }
                 ComboBox { //Team that declared contract
                     id: teamInput
-                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: 55
                     Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     indicator: Item{}
                     font.pixelSize: Math.min(height, width) / 2.6
                     currentIndex: scores.teamThatDeclaredContract
@@ -208,10 +260,12 @@ ApplicationWindow {
                 }
                 ScoreInput { //bid
                     id: bidInput
-                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: appWindow.minimumScoreWidth
                     Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     minimalValue: 8
                     maximalValue: 200
                     text: scores.bid
@@ -223,10 +277,12 @@ ApplicationWindow {
                 }
                 Button { //capot
                     id: capotInput
-                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: 25
                     Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     text: 'K'
                     font.pixelSize: Math.min(height, width) / 2.1
                     checkable: true
@@ -235,10 +291,12 @@ ApplicationWindow {
                 }
                 ComboBox { //contras
                     id: contrasInput
-                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: 40
                     Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     indicator: Item{}
                     leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
                     font.pixelSize: Math.min(height, width) / 2.1
@@ -252,10 +310,12 @@ ApplicationWindow {
                 }
                 ComboBox { //trump
                     id: trumpInput
-                    Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: 45
                     Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     indicator: Item{}
                     leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
                     font.pixelSize: Math.min(height, width) / 2.1
@@ -288,7 +348,8 @@ ApplicationWindow {
             //first row
             ScoreInput { //first score
                 id: currentFirstScore
-                Layout.preferredWidth: appWindow.largeScoreWidth
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: largeScoreFactor
                 Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: appWindow.minimumScoreWidth
                 Layout.minimumHeight: appWindow.minimumScoreHeight
@@ -303,17 +364,20 @@ ApplicationWindow {
             }
             ScoreInput { //first declarations
                 id: currentFirstDeclarations
-                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: smallScoreFactor
                 Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: appWindow.minimumScoreWidth
                 Layout.minimumHeight: appWindow.minimumScoreHeight
+                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                 minimalValue: 0
                 maximalValue: 200
                 text: '0'
             }
             ScoreInput { //second score
                 id: currentSecondScore
-                Layout.preferredWidth: appWindow.largeScoreWidth
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: largeScoreFactor
                 Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: appWindow.minimumScoreWidth
                 Layout.minimumHeight: appWindow.minimumScoreHeight
@@ -328,26 +392,32 @@ ApplicationWindow {
             }
             ScoreInput { //second declarations
                 id: currentSecondDeclarations
-                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: smallScoreFactor
                 Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: appWindow.minimumScoreWidth
                 Layout.minimumHeight: appWindow.minimumScoreHeight
+                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                 minimalValue: 0
                 maximalValue: 200
                 text: '0'
             }
             Item { //filler
-                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: smallScoreFactor
                 Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: 10
                 Layout.minimumHeight: appWindow.minimumScoreHeight
+                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
             }
             ComboBox { //Team that declared contract
                 id: currentTeamInput
-                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: smallScoreFactor
                 Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: 55
                 Layout.minimumHeight: appWindow.minimumScoreHeight
+                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                 indicator: Item{}
                 font.pixelSize: Math.min(height, width) / 2.6
                 Text { id: selectedTeam; text: parent.currentText; color: "transparent" } // to get size of the team's name
@@ -356,29 +426,35 @@ ApplicationWindow {
             }
             ScoreInput { //bid
                 id: currentBid
-                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: smallScoreFactor
                 Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: appWindow.minimumScoreWidth
                 Layout.minimumHeight: appWindow.minimumScoreHeight
+                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                 minimalValue: 8
                 maximalValue: 200
             }
             Button { //capot
                 id: currentCapotStatus
-                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: smallScoreFactor
                 Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: 25
                 Layout.minimumHeight: appWindow.minimumScoreHeight
+                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                 text: 'K'
                 font.pixelSize: Math.min(height, width) / 2.1
                 checkable: true
             }
             ComboBox { //contras
                 id: currentModifier
-                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: smallScoreFactor
                 Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: 40
                 Layout.minimumHeight: appWindow.minimumScoreHeight
+                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                 indicator: Item{}
                 leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
                 font.pixelSize: Math.min(height, width) / 2.1
@@ -386,10 +462,12 @@ ApplicationWindow {
             }
             ComboBox { //trump
                 id: currentTrump
-                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: smallScoreFactor
                 Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: 45
                 Layout.minimumHeight: appWindow.minimumScoreHeight
+                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                 indicator: Item{}
                 leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
                 font.pixelSize: Math.min(height, width) / 2.1
@@ -401,10 +479,12 @@ ApplicationWindow {
                 Layout.minimumHeight: appWindow.minimumScoreHeight
             }
             RoundButton { // add button
-                Layout.preferredWidth: Math.min(appWindow.smallScoreWidth, height)
+                Layout.fillWidth: true
+                Layout.horizontalStretchFactor: smallScoreFactor
                 Layout.preferredHeight: appWindow.scoreHeight
                 Layout.minimumWidth: 25
                 Layout.minimumHeight: appWindow.minimumScoreHeight
+                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                 text: '+'
                 font.pixelSize: Math.min(height, width) / 2.1
                 highlighted: true
