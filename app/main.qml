@@ -131,6 +131,7 @@ ApplicationWindow {
     }
     ListView {
         anchors.fill: parent
+        spacing: 15
         model: gameModel
         delegate: Item {
             id: scores
@@ -160,7 +161,7 @@ ApplicationWindow {
                 anchors.fill: parent
 
                 columns: 11
-                //first row
+                //first row -------------------------------------------------------------------------
                 ScoreInput { //first score
                     id: firstScoreInput
                     Layout.fillWidth: true
@@ -316,7 +317,7 @@ ApplicationWindow {
                     Layout.minimumHeight: appWindow.minimumScoreHeight
                 }
 
-                //second row
+                //second row -------------------------------------------------------------------------
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: appWindow.scoreHeight
@@ -338,6 +339,7 @@ ApplicationWindow {
                     text: "Բլոտ"
                     font.pixelSize: Math.min(height, width) / 3.5
                     ButtonGroup.group: blotGroupForScores
+                    enabled: scores.trump < 4 // enabled if there is a suit selected
                     checkable: true
                     checked: scores.firstBlot
                     onClicked: {
@@ -371,6 +373,7 @@ ApplicationWindow {
                     text: "Բլոտ"
                     font.pixelSize: Math.min(height, width) / 3.5
                     ButtonGroup.group: blotGroupForScores
+                    enabled: scores.trump < 4 // enabled if there is a suit selected
                     checkable: true
                     checked: scores.secondBlot
                     onClicked: {
@@ -423,7 +426,7 @@ ApplicationWindow {
                 Layout.preferredHeight: 2 * appWindow.scoreHeight
                 Layout.minimumWidth: appWindow.minimumScoreWidth
                 Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-                Layout.maximumWidth: Math.max((height - columnSpacing) / 2, Layout.minimumWidth)
+                Layout.maximumWidth: Math.max((height - Layout.columnSpacing) / 2, Layout.minimumWidth)
                 ScoreInput { //first declarations
                     id: currentFirstDeclarations
                     Layout.fillWidth: true
@@ -439,6 +442,7 @@ ApplicationWindow {
                     text: "Բլոտ"
                     font.pixelSize: Math.min(height, width) / 3.5
                     ButtonGroup.group: blotGroupForAddingScores
+                    enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
                     checkable: true
                     onClicked: {
                         if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot1) {
@@ -469,10 +473,10 @@ ApplicationWindow {
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.horizontalStretchFactor: smallScoreFactor
-                Layout.preferredHeight: 2 * appWindow.scoreHeight + columnSpacing
+                Layout.preferredHeight: 2 * appWindow.scoreHeight + Layout.columnSpacing
                 Layout.minimumWidth: appWindow.minimumScoreWidth
-                Layout.minimumHeight: 2 * appWindow.minimumScoreHeight + columnSpacing
-                Layout.maximumWidth: Math.max((height - columnSpacing) / 2, Layout.minimumWidth)
+                Layout.minimumHeight: 2 * appWindow.minimumScoreHeight + Layout.columnSpacing
+                Layout.maximumWidth: Math.max((height - Layout.columnSpacing) / 2, Layout.minimumWidth)
                 ScoreInput { //second declarations
                     id: currentSecondDeclarations
                     Layout.fillWidth: true
@@ -488,6 +492,7 @@ ApplicationWindow {
                     text: "Բլոտ"
                     font.pixelSize: Math.min(height, width) / 3.5
                     ButtonGroup.group: blotGroupForAddingScores
+                    enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
                     checkable: true
                     onClicked: {
                         if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot2) {
@@ -595,10 +600,10 @@ ApplicationWindow {
                         gameModel.append({
                             "firstScore": Number.fromLocaleString(currentFirstScore.text),
                             "firstDeclarations": Number.fromLocaleString(currentFirstDeclarations.text),
-                            "firstBlot": false,
+                            "firstBlot": currentBlotReblot1.checked,
                             "secondScore": Number.fromLocaleString(currentSecondScore.text),
                             "secondDeclarations": Number.fromLocaleString(currentSecondDeclarations.text),
-                            "secondBlot": true,
+                            "secondBlot": currentBlotReblot2.checked,
                             "teamThatDeclaredContract": currentTeamInput.currentIndex,
                             "bid": Number.fromLocaleString(currentBid.text),
                             "isCapot":  currentCapotStatus.checked,
