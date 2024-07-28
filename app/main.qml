@@ -137,10 +137,10 @@ ApplicationWindow {
             id: scores
             required property int firstScore
             required property int firstDeclarations
-            required property int firstBlot
+            required property bool firstBlot
             required property int secondScore
             required property int secondDeclarations
-            required property int secondBlot
+            required property bool secondBlot
             required property int teamThatDeclaredContract
             required property int bid
             required property int trump
@@ -156,6 +156,42 @@ ApplicationWindow {
                 id: blotGroupForScores
                 property var lastClicked: null
             }
+            
+            function roundPoints(number, thisTeamDeclaredContract)
+            {
+                if(number == 162)
+                    return 25
+                if(number % 10 < 6 || (number % 10 == 6 && thisTeamDeclaredContract))
+                    return Math.trunc(number / 10)
+                return Math.trunc(number / 10) + 1
+            }
+
+            function calculatePointsWon()
+            {
+                if(teamThatDeclaredContract == 0) {
+                    if(firstScore != 162 && 
+                        (firstScore == 0 || firstScore < (bid - firstDeclarations - firstBlot * 2) * 10 || isCapot)) //first team lost
+                        return [firstBlot * 2,
+                                16 + bid * modifier + firstDeclarations + secondDeclarations + secondBlot * 2]
+                    else //first team won
+                        return [roundPoints(firstScore, true) + bid * modifier + firstDeclarations + firstBlot * 2 +
+                                    (modifier > 1 ? secondDeclarations : 0),
+                                secondBlot * 2 + (modifier > 1 ? 0 : roundPoints(secondScore, false) + secondDeclarations)]
+                }
+                else {
+                    if(secondScore != 162 && 
+                        (secondScore == 0 || secondScore < (bid - secondDeclarations - secondBlot * 2) * 10 || isCapot)) //second team lost
+                        return [16 + bid * modifier + secondDeclarations + firstDeclarations + firstBlot * 2,
+                                secondBlot * 2]
+                    else //second team won
+                        return [firstBlot * 2 + (modifier > 1 ? 0 : roundPoints(firstScore, false) + firstDeclarations),
+                                roundPoints(secondScore, true) + bid * modifier + secondDeclarations + secondBlot * 2 +
+                                    (modifier > 1 ? firstDeclarations : 0)]
+                }
+            }
+
+            pointsWonByFirstTeam: calculatePointsWon()[0]
+            pointsWonBySecondTeam: calculatePointsWon()[1]
 
             GridLayout {
                 anchors.fill: parent
@@ -171,9 +207,8 @@ ApplicationWindow {
                     Layout.minimumHeight: appWindow.minimumScoreHeight
                     minimalValue: 0
                     maximalValue: 162
-                    Component.onCompleted: {
-                        text = scores.firstScore
-                    }
+
+                    Component.onCompleted: { text = scores.firstScore }
                     Binding {
                         scores.firstScore: firstScoreInput.text
                         when: firstScoreInput.acceptableInput
@@ -205,9 +240,7 @@ ApplicationWindow {
                     Layout.minimumHeight: appWindow.minimumScoreHeight
                     minimalValue: 0
                     maximalValue: 162
-                    Component.onCompleted: {
-                        text = scores.secondScore
-                    }
+                    Component.onCompleted: { text = scores.secondScore }
                     Binding {
                         scores.secondScore: secondScoreInput.text
                         when: secondScoreInput.acceptableInput
@@ -340,6 +373,7 @@ ApplicationWindow {
                     font.pixelSize: Math.min(height, width) / 3.5
                     ButtonGroup.group: blotGroupForScores
                     enabled: scores.trump < 4 // enabled if there is a suit selected
+                    onEnabledChanged: if(enabled) blotGroupForScores.checkState = Qt.Unchecked
                     checkable: true
                     checked: scores.firstBlot
                     onClicked: {
@@ -374,6 +408,7 @@ ApplicationWindow {
                     font.pixelSize: Math.min(height, width) / 3.5
                     ButtonGroup.group: blotGroupForScores
                     enabled: scores.trump < 4 // enabled if there is a suit selected
+                    onEnabledChanged: if(enabled) blotGroupForScores.checkState = Qt.Unchecked
                     checkable: true
                     checked: scores.secondBlot
                     onClicked: {
@@ -443,6 +478,7 @@ ApplicationWindow {
                     font.pixelSize: Math.min(height, width) / 3.5
                     ButtonGroup.group: blotGroupForAddingScores
                     enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
+                    onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
                     checkable: true
                     onClicked: {
                         if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot1) {
@@ -493,6 +529,7 @@ ApplicationWindow {
                     font.pixelSize: Math.min(height, width) / 3.5
                     ButtonGroup.group: blotGroupForAddingScores
                     enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
+                    onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
                     checkable: true
                     onClicked: {
                         if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot2) {
