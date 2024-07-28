@@ -4,6 +4,7 @@ import QtQuick.Controls.Universal
 
 Item {
     property alias text: name.text
+    property double reduceFactor: 3
     TextArea {
         id: name
         anchors {
@@ -16,6 +17,6 @@ Item {
         background: Item{}
         horizontalAlignment: TextArea.AlignHCenter
         verticalAlignment: TextArea.AlignVCenter
-        font.pixelSize: Math.min(parent.height, parent.width) / 3
+        font.pixelSize: Math.min(parent.height, parent.width) / parent.reduceFactor
     }
 }
