@@ -19,6 +19,9 @@ ApplicationWindow {
     property int minimumScoreHeight: 25
     property string themedBlue: (Universal.theme == Universal.Light ? "light" : "dark") + "blue"
 
+    property int pointsAccumulated1
+    property int pointsAccumulated2
+
     ListModel {
         id: gameModel
         ListElement {
@@ -168,26 +171,32 @@ ApplicationWindow {
 
             function calculatePointsWon()
             {
-                if(teamThatDeclaredContract == 0) {
+                let pointsWon1, pointsWon2
+                if(teamThatDeclaredContract == 0)
                     if(firstScore != 162 && 
-                        (firstScore == 0 || firstScore < (bid - firstDeclarations - firstBlot * 2) * 10 || isCapot)) //first team lost
-                        return [firstBlot * 2,
-                                16 + bid * modifier + firstDeclarations + secondDeclarations + secondBlot * 2]
-                    else //first team won
-                        return [roundPoints(firstScore, true) + bid * modifier + firstDeclarations + firstBlot * 2 +
-                                    (modifier > 1 ? secondDeclarations : 0),
-                                secondBlot * 2 + (modifier > 1 ? 0 : roundPoints(secondScore, false) + secondDeclarations)]
-                }
-                else {
+                        (firstScore == 0 || firstScore < (bid - firstDeclarations - firstBlot * 2) * 10 || isCapot)) { //first team lost
+
+                        pointsWon1 = (firstBlot ? 2 : 0)
+                        pointsWon2 = 16 + bid * modifier + firstDeclarations + secondDeclarations + secondBlot * 2
+                    }
+                    else { //first team won
+                        pointsWon1 = roundPoints(firstScore, true) + bid * modifier + firstDeclarations + firstBlot * 2 +
+                                    (modifier > 1 ? secondDeclarations : 0)
+                        pointsWon2 = secondBlot * 2 + (modifier > 1 ? 0 : roundPoints(secondScore, false) + secondDeclarations)
+                    }
+                else
                     if(secondScore != 162 && 
-                        (secondScore == 0 || secondScore < (bid - secondDeclarations - secondBlot * 2) * 10 || isCapot)) //second team lost
-                        return [16 + bid * modifier + secondDeclarations + firstDeclarations + firstBlot * 2,
-                                secondBlot * 2]
-                    else //second team won
-                        return [firstBlot * 2 + (modifier > 1 ? 0 : roundPoints(firstScore, false) + firstDeclarations),
-                                roundPoints(secondScore, true) + bid * modifier + secondDeclarations + secondBlot * 2 +
-                                    (modifier > 1 ? firstDeclarations : 0)]
-                }
+                        (secondScore == 0 || secondScore < (bid - secondDeclarations - secondBlot * 2) * 10 || isCapot)) {//second team lost
+
+                        pointsWon1 = 16 + bid * modifier + secondDeclarations + firstDeclarations + firstBlot * 2
+                        pointsWon2 = secondBlot * 2
+                    }
+                    else { //second team won
+                        pointsWon1 = firstBlot * 2 + (modifier > 1 ? 0 : roundPoints(firstScore, false) + firstDeclarations)
+                        pointsWon2 = roundPoints(secondScore, true) + bid * modifier + secondDeclarations + secondBlot * 2 +
+                                    (modifier > 1 ? firstDeclarations : 0)
+                    }
+                return [pointsWon1, pointsWon2]
             }
 
             pointsWonByFirstTeam: calculatePointsWon()[0]
@@ -207,8 +216,7 @@ ApplicationWindow {
                     Layout.minimumHeight: appWindow.minimumScoreHeight
                     minimalValue: 0
                     maximalValue: 162
-
-                    Component.onCompleted: { text = scores.firstScore }
+                    text: { text = scores.firstScore }
                     Binding {
                         scores.firstScore: firstScoreInput.text
                         when: firstScoreInput.acceptableInput
@@ -228,8 +236,11 @@ ApplicationWindow {
                     Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     minimalValue: 0
                     maximalValue: 200
-                    text: scores.firstDeclarations
-                    Binding { scores.firstDeclarations: firstDeclarationsInput.text }
+                    text: { text = scores.firstDeclarations }
+                    Binding { 
+                        scores.firstDeclarations: firstDeclarationsInput.text
+                        when: firstDeclarationsInput.acceptableInput
+                    }
                 }
                 ScoreInput { //second score
                     id: secondScoreInput
@@ -240,7 +251,7 @@ ApplicationWindow {
                     Layout.minimumHeight: appWindow.minimumScoreHeight
                     minimalValue: 0
                     maximalValue: 162
-                    Component.onCompleted: { text = scores.secondScore }
+                    text: { text = scores.secondScore }
                     Binding {
                         scores.secondScore: secondScoreInput.text
                         when: secondScoreInput.acceptableInput
@@ -260,8 +271,11 @@ ApplicationWindow {
                     Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     minimalValue: 0
                     maximalValue: 200
-                    text: scores.secondDeclarations
-                    Binding { scores.secondDeclarations: secondDeclarationsInput.text }
+                    text: { text = scores.secondDeclarations }
+                    Binding { 
+                        scores.secondDeclarations: secondDeclarationsInput.text
+                        when: secondDeclarationsInput.acceptableInput
+                    }
                 }
                 Item { //filler
                     Layout.fillWidth: true
@@ -281,7 +295,7 @@ ApplicationWindow {
                     Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     indicator: Item{}
                     font.pixelSize: Math.min(height, width) / 2.6
-                    currentIndex: scores.teamThatDeclaredContract
+                    currentIndex: { currentIndex = scores.teamThatDeclaredContract }
                     Text { id: selectedTeam; text: parent.currentText; color: "transparent" } // to get size of the team's name
                     leftPadding: (width - selectedTeam.implicitWidth) / 2 - ((width - height < 10) ? 20 : 10) // to center options
                     model: ["Մենք", "Դուք"]
@@ -297,7 +311,7 @@ ApplicationWindow {
                     Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     minimalValue: 8
                     maximalValue: 200
-                    text: scores.bid
+                    text: { text = scores.bid }
                     Binding { scores.bid: bidInput.text }
                 }
                 Button { //capot
@@ -311,7 +325,7 @@ ApplicationWindow {
                     text: 'Կ'
                     font.pixelSize: Math.min(height, width) / 2.1
                     checkable: true
-                    checked: scores.isCapot
+                    checked: { checked = scores.isCapot }
                     onClicked: { scores.isCapot ^= true }
                 }
                 ComboBox { //contras
@@ -326,7 +340,7 @@ ApplicationWindow {
                     leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
                     font.pixelSize: Math.min(height, width) / 2.1
                     model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
-                    currentIndex: Math.log2(scores.modifier)
+                    currentIndex: { currentIndex = Math.log2(scores.modifier) }
                     Binding { scores.modifier: Math.pow(2, contrasInput.currentIndex) }
                 }
                 ComboBox { //trump
@@ -341,7 +355,7 @@ ApplicationWindow {
                     leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
                     font.pixelSize: Math.min(height, width) / 2.1
                     model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
-                    currentIndex: scores.trump
+                    currentIndex: { currentIndex = scores.trump }
                     Binding { scores.trump: trumpInput.currentIndex }
                 }
                 Item { //filler
@@ -373,9 +387,9 @@ ApplicationWindow {
                     font.pixelSize: Math.min(height, width) / 3.5
                     ButtonGroup.group: blotGroupForScores
                     enabled: scores.trump < 4 // enabled if there is a suit selected
-                    onEnabledChanged: if(enabled) blotGroupForScores.checkState = Qt.Unchecked
                     checkable: true
-                    checked: scores.firstBlot
+                    checked: scores.firstBlot && scores.trump < 4
+                    Binding { scores.firstBlot: blotReblot1.checked }
                     onClicked: {
                         if(checked && blotGroupForScores.lastClicked == blotReblot1) {
                             blotGroupForScores.checkState = Qt.Unchecked
@@ -408,9 +422,9 @@ ApplicationWindow {
                     font.pixelSize: Math.min(height, width) / 3.5
                     ButtonGroup.group: blotGroupForScores
                     enabled: scores.trump < 4 // enabled if there is a suit selected
-                    onEnabledChanged: if(enabled) blotGroupForScores.checkState = Qt.Unchecked
                     checkable: true
-                    checked: scores.secondBlot
+                    checked: scores.secondBlot && scores.trump < 4
+                    Binding { scores.secondBlot: blotReblot2.checked }
                     onClicked: {
                         if(checked && blotGroupForScores.lastClicked == blotReblot2) {
                             blotGroupForScores.checkState = Qt.Unchecked
@@ -423,7 +437,7 @@ ApplicationWindow {
             }
         }
     }
-    
+
     footer: Rectangle {
 
         width: appWindow.width
