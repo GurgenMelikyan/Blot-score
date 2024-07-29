@@ -19,8 +19,8 @@ ApplicationWindow {
     property int minimumScoreHeight: 25
     property string themedBlue: (Universal.theme == Universal.Light ? "light" : "dark") + "blue"
 
-    property int pointsAccumulated1
-    property int pointsAccumulated2
+    property int pointsAccumulated1: 0
+    property int pointsAccumulated2: 0
 
     ListModel {
         id: gameModel
@@ -29,7 +29,7 @@ ApplicationWindow {
             firstDeclarations: 5
             firstBlot: false
             secondScore: 152
-            secondDeclarations: 2
+            secondDeclarations: 0
             secondBlot: true
             teamThatDeclaredContract: 0
             bid: 13
@@ -152,9 +152,15 @@ ApplicationWindow {
             required property int pointsWonByFirstTeam
             required property int pointsWonBySecondTeam
 
+            property int pointsWon1: 0 // used in accumulation
+            property int pointsWon2: 0 // used in accumulation
+
             height: Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
             width: appWindow.width
             
+            onFirstDeclarationsChanged: secondDeclarationsInput.text = '0'
+            onSecondDeclarationsChanged: firstDeclarationsInput.text = '0'
+
             ButtonGroup {
                 id: blotGroupForScores
                 property var lastClicked: null
@@ -173,10 +179,8 @@ ApplicationWindow {
             {
                 let pointsWon1, pointsWon2
                 if(teamThatDeclaredContract == 0)
-                    if(firstScore != 162 && 
-                        (firstScore == 0 || firstScore < (bid - firstDeclarations - firstBlot * 2) * 10 || isCapot)) { //first team lost
-
-                        pointsWon1 = (firstBlot ? 2 : 0)
+                    if(firstScore == 0 || (firstScore == 162 ? 250 : firstScore) < (bid - firstDeclarations - firstBlot * 2) * 10 || isCapot) { //first team lost
+                        pointsWon1 = firstBlot * 2
                         pointsWon2 = 16 + bid * modifier + firstDeclarations + secondDeclarations + secondBlot * 2
                     }
                     else { //first team won
@@ -185,9 +189,7 @@ ApplicationWindow {
                         pointsWon2 = secondBlot * 2 + (modifier > 1 ? 0 : roundPoints(secondScore, false) + secondDeclarations)
                     }
                 else
-                    if(secondScore != 162 && 
-                        (secondScore == 0 || secondScore < (bid - secondDeclarations - secondBlot * 2) * 10 || isCapot)) {//second team lost
-
+                    if(secondScore == 0 || (secondScore == 162 ? 250 : secondScore) < (bid - secondDeclarations - secondBlot * 2) * 10 || isCapot) {//second team lost
                         pointsWon1 = 16 + bid * modifier + secondDeclarations + firstDeclarations + firstBlot * 2
                         pointsWon2 = secondBlot * 2
                     }
@@ -202,10 +204,21 @@ ApplicationWindow {
             pointsWonByFirstTeam: calculatePointsWon()[0]
             pointsWonBySecondTeam: calculatePointsWon()[1]
 
+            onPointsWonByFirstTeamChanged: {
+                appWindow.pointsAccumulated1 -= pointsWon1
+                appWindow.pointsAccumulated1 += pointsWonByFirstTeam
+                pointsWon1 = pointsWonByFirstTeam
+            }
+            onPointsWonBySecondTeamChanged: {
+                appWindow.pointsAccumulated2 -= pointsWon2
+                appWindow.pointsAccumulated2 += pointsWonBySecondTeam
+                pointsWon2 = pointsWonBySecondTeam
+            }
+
             GridLayout {
                 anchors.fill: parent
 
-                columns: 11
+                columns: 10
                 //first row -------------------------------------------------------------------------
                 ScoreInput { //first score
                     id: firstScoreInput
@@ -358,11 +371,6 @@ ApplicationWindow {
                     currentIndex: { currentIndex = scores.trump }
                     Binding { scores.trump: trumpInput.currentIndex }
                 }
-                Item { //filler
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                }
 
                 //second row -------------------------------------------------------------------------
                 Rectangle {
@@ -438,238 +446,269 @@ ApplicationWindow {
         }
     }
 
-    footer: Rectangle {
-
-        width: appWindow.width
-        height: Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
-        color: appWindow.themedBlue
+    footer: Column {
         Universal.theme: Universal.System
         
-        ButtonGroup {
-            id: blotGroupForAddingScores
-            property var lastClicked: null
-        }
-
         RowLayout {
-            anchors.fill: parent
-            //first row
-            ScoreInput { //first score
-                id: currentFirstScore
+            width: appWindow.width
+            height: 1.5 * appWindow.scoreHeight
+
+            Rectangle {
                 Layout.fillWidth: true
                 Layout.horizontalStretchFactor: largeScoreFactor
-                Layout.preferredHeight: appWindow.scoreHeight
+                Layout.preferredHeight: 1.5 * appWindow.scoreHeight
                 Layout.minimumWidth: appWindow.minimumScoreWidth
-                Layout.minimumHeight: appWindow.minimumScoreHeight
-                minimalValue: 0
-                maximalValue: 162
-                Binding {
-                    target: currentSecondScore
-                    property: "text"
-                    value:  162 - currentFirstScore.text
-                    when: currentFirstScore.acceptableInput
+                Layout.minimumHeight: 1.5 * appWindow.minimumScoreHeight
+                color: "blue"
+                ScoreName { 
+                    anchors.fill: parent
+                    reduceFactor: 2.6
+                    text: appWindow.pointsAccumulated1
                 }
             }
-            ColumnLayout {
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: smallScoreFactor
-                Layout.preferredHeight: 2 * appWindow.scoreHeight
-                Layout.minimumWidth: appWindow.minimumScoreWidth
-                Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-                Layout.maximumWidth: Math.max((height - Layout.columnSpacing) / 2, Layout.minimumWidth)
-                ScoreInput { //first declarations
-                    id: currentFirstDeclarations
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    minimalValue: 0
-                    maximalValue: 200
-                    text: '0'
-                }
-                Button { //blot reblot 1
-                    id: currentBlotReblot1
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    text: "Բլոտ"
-                    font.pixelSize: Math.min(height, width) / 3.5
-                    ButtonGroup.group: blotGroupForAddingScores
-                    enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
-                    onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
-                    checkable: true
-                    onClicked: {
-                        if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot1) {
-                            blotGroupForAddingScores.checkState = Qt.Unchecked
-                            blotGroupForAddingScores.lastClicked = null
-                        }
-                        else
-                            blotGroupForAddingScores.lastClicked = currentBlotReblot1
-                    }
-                }
-            }
-            ScoreInput { //second score
-                id: currentSecondScore
+            Rectangle {
                 Layout.fillWidth: true
                 Layout.horizontalStretchFactor: largeScoreFactor
-                Layout.preferredHeight: appWindow.scoreHeight
+                Layout.preferredHeight: 1.5 * appWindow.scoreHeight
                 Layout.minimumWidth: appWindow.minimumScoreWidth
-                Layout.minimumHeight: appWindow.minimumScoreHeight
-                minimalValue: 0
-                maximalValue: 162
-                Binding {
-                    target: currentFirstScore
-                    property: "text"
-                    value:  162 - currentSecondScore.text
-                    when: currentSecondScore.acceptableInput
+                Layout.minimumHeight: 1.5 * appWindow.minimumScoreHeight
+                color: "blue"
+                ScoreName { 
+                    anchors.fill: parent
+                    reduceFactor: 2.6
+                    text: appWindow.pointsAccumulated2
                 }
             }
-            ColumnLayout {
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: smallScoreFactor
-                Layout.preferredHeight: 2 * appWindow.scoreHeight + Layout.columnSpacing
-                Layout.minimumWidth: appWindow.minimumScoreWidth
-                Layout.minimumHeight: 2 * appWindow.minimumScoreHeight + Layout.columnSpacing
-                Layout.maximumWidth: Math.max((height - Layout.columnSpacing) / 2, Layout.minimumWidth)
-                ScoreInput { //second declarations
-                    id: currentSecondDeclarations
+        }
+        Rectangle {
+            width: appWindow.width
+            height: Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
+            color: appWindow.themedBlue
+            Universal.theme: Universal.System
+        
+            ButtonGroup {
+                id: blotGroupForAddingScores
+                property var lastClicked: null
+            }
+
+            RowLayout {
+                anchors.fill: parent
+                //first row
+                ScoreInput { //first score
+                    id: currentFirstScore
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    Layout.horizontalStretchFactor: largeScoreFactor
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
                     minimalValue: 0
-                    maximalValue: 200
-                    text: '0'
+                    maximalValue: 162
+                    Binding {
+                        target: currentSecondScore
+                        property: "text"
+                        value:  162 - currentFirstScore.text
+                        when: currentFirstScore.acceptableInput
+                    }
                 }
-                Button { //blot reblot 2
-                    id: currentBlotReblot2
+                ColumnLayout {
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    text: "Բլոտ"
-                    font.pixelSize: Math.min(height, width) / 3.5
-                    ButtonGroup.group: blotGroupForAddingScores
-                    enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
-                    onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
-                    checkable: true
-                    onClicked: {
-                        if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot2) {
-                            blotGroupForAddingScores.checkState = Qt.Unchecked
-                            blotGroupForAddingScores.lastClicked = null
+                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.preferredHeight: 2 * appWindow.scoreHeight + Layout.columnSpacing
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: 2 * appWindow.minimumScoreHeight + Layout.columnSpacing
+                    Layout.maximumWidth: Math.max((height - Layout.columnSpacing) / 2, Layout.minimumWidth)
+                    ScoreInput { //first declarations
+                        id: currentFirstDeclarations
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        minimalValue: 0
+                        maximalValue: 200
+                        text: '0'
+                        onTextChanged: currentSecondDeclarations.text = '0'
+                    }
+                    Button { //blot reblot 1
+                        id: currentBlotReblot1
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        text: "Բլոտ"
+                        font.pixelSize: Math.min(height, width) / 3.5
+                        ButtonGroup.group: blotGroupForAddingScores
+                        enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
+                        onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
+                        checkable: true
+                        onClicked: {
+                            if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot1) {
+                                blotGroupForAddingScores.checkState = Qt.Unchecked
+                                blotGroupForAddingScores.lastClicked = null
+                            }
+                            else
+                                blotGroupForAddingScores.lastClicked = currentBlotReblot1
                         }
-                        else
-                            blotGroupForAddingScores.lastClicked = currentBlotReblot2
                     }
                 }
-            }
-            Item { //filler
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: smallScoreFactor
-                Layout.preferredHeight: appWindow.scoreHeight
-                Layout.minimumWidth: 10
-                Layout.minimumHeight: appWindow.minimumScoreHeight
-                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-            }
-            ComboBox { //Team that declared contract
-                id: currentTeamInput
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: smallScoreFactor
-                Layout.preferredHeight: appWindow.scoreHeight
-                Layout.minimumWidth: 55
-                Layout.minimumHeight: appWindow.minimumScoreHeight
-                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                indicator: Item{}
-                font.pixelSize: Math.min(height, width) / 2.6
-                Text { id: selectedTeam; text: parent.currentText; color: "transparent" } // to get size of the team's name
-                leftPadding: (width - selectedTeam.implicitWidth) / 2 - ((width - height < 10) ? 20 : 10) // to center options
-                model: ["Մենք", "Դուք"]
-            }
-            ScoreInput { //bid
-                id: currentBid
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: smallScoreFactor
-                Layout.preferredHeight: appWindow.scoreHeight
-                Layout.minimumWidth: appWindow.minimumScoreWidth
-                Layout.minimumHeight: appWindow.minimumScoreHeight
-                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                minimalValue: 8
-                maximalValue: 200
-            }
-            Button { //capot
-                id: currentCapotStatus
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: smallScoreFactor
-                Layout.preferredHeight: appWindow.scoreHeight
-                Layout.minimumWidth: 25
-                Layout.minimumHeight: appWindow.minimumScoreHeight
-                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                text: 'Կ'
-                font.pixelSize: Math.min(height, width) / 2.1
-                checkable: true
-            }
-            ComboBox { //contras
-                id: currentModifier
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: smallScoreFactor
-                Layout.preferredHeight: appWindow.scoreHeight
-                Layout.minimumWidth: 40
-                Layout.minimumHeight: appWindow.minimumScoreHeight
-                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                indicator: Item{}
-                leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
-                font.pixelSize: Math.min(height, width) / 2.1
-                model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
-            }
-            ComboBox { //trump
-                id: currentTrump
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: smallScoreFactor
-                Layout.preferredHeight: appWindow.scoreHeight
-                Layout.minimumWidth: 45
-                Layout.minimumHeight: appWindow.minimumScoreHeight
-                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                indicator: Item{}
-                leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
-                font.pixelSize: Math.min(height, width) / 2.1
-                model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
-            }
-            Item { //filler
-                Layout.fillWidth: true
-                Layout.preferredHeight: appWindow.scoreHeight
-                Layout.minimumHeight: appWindow.minimumScoreHeight
-            }
-            RoundButton { // add button
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: smallScoreFactor
-                Layout.preferredHeight: appWindow.scoreHeight
-                Layout.minimumWidth: 25
-                Layout.minimumHeight: appWindow.minimumScoreHeight
-                Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                text: '+'
-                font.pixelSize: Math.min(height, width) / 2.1
-                highlighted: true
-                onClicked: {
-                    if(currentFirstScore.acceptableInput &&
-                        currentFirstDeclarations.acceptableInput &&
-                        currentSecondScore.acceptableInput &&
-                        currentSecondDeclarations.acceptableInput &&
-                        currentBid.acceptableInput)
-                    {
-                        gameModel.append({
-                            "firstScore": Number.fromLocaleString(currentFirstScore.text),
-                            "firstDeclarations": Number.fromLocaleString(currentFirstDeclarations.text),
-                            "firstBlot": currentBlotReblot1.checked,
-                            "secondScore": Number.fromLocaleString(currentSecondScore.text),
-                            "secondDeclarations": Number.fromLocaleString(currentSecondDeclarations.text),
-                            "secondBlot": currentBlotReblot2.checked,
-                            "teamThatDeclaredContract": currentTeamInput.currentIndex,
-                            "bid": Number.fromLocaleString(currentBid.text),
-                            "isCapot":  currentCapotStatus.checked,
-                            "modifier": Math.pow(2, currentModifier.currentIndex),
-                            "trump": currentTrump.currentIndex,
-                            "pointsWonByFirstTeam": 0,
-                            "pointsWonBySecondTeam": 0
-                        })
+                ScoreInput { //second score
+                    id: currentSecondScore
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: largeScoreFactor
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    minimalValue: 0
+                    maximalValue: 162
+                    Binding {
+                        target: currentFirstScore
+                        property: "text"
+                        value:  162 - currentSecondScore.text
+                        when: currentSecondScore.acceptableInput
                     }
                 }
-            }
-            Item { //filler
-                Layout.minimumWidth: 10
-                Layout.preferredHeight: appWindow.scoreHeight
-                Layout.minimumHeight: appWindow.minimumScoreHeight
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.preferredHeight: 2 * appWindow.scoreHeight + Layout.columnSpacing
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: 2 * appWindow.minimumScoreHeight + Layout.columnSpacing
+                    Layout.maximumWidth: Math.max((height - Layout.columnSpacing) / 2, Layout.minimumWidth)
+                    ScoreInput { //second declarations
+                        id: currentSecondDeclarations
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        minimalValue: 0
+                        maximalValue: 200
+                        text: '0'
+                        onTextChanged: currentFirstDeclarations.text = '0'
+                    }
+                    Button { //blot reblot 2
+                        id: currentBlotReblot2
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        text: "Բլոտ"
+                        font.pixelSize: Math.min(height, width) / 3.5
+                        ButtonGroup.group: blotGroupForAddingScores
+                        enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
+                        onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
+                        checkable: true
+                        onClicked: {
+                            if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot2) {
+                                blotGroupForAddingScores.checkState = Qt.Unchecked
+                                blotGroupForAddingScores.lastClicked = null
+                            }
+                            else
+                                blotGroupForAddingScores.lastClicked = currentBlotReblot2
+                        }
+                    }
+                }
+                Item { //filler
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 10
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                }
+                ComboBox { //Team that declared contract
+                    id: currentTeamInput
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 55
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    indicator: Item{}
+                    font.pixelSize: Math.min(height, width) / 2.6
+                    Text { id: selectedTeam; text: parent.currentText; color: "transparent" } // to get size of the team's name
+                    leftPadding: (width - selectedTeam.implicitWidth) / 2 - ((width - height < 10) ? 20 : 10) // to center options
+                    model: ["Մենք", "Դուք"]
+                }
+                ScoreInput { //bid
+                    id: currentBid
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    minimalValue: 8
+                    maximalValue: 200
+                }
+                Button { //capot
+                    id: currentCapotStatus
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 25
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    text: 'Կ'
+                    font.pixelSize: Math.min(height, width) / 2.1
+                    checkable: true
+                }
+                ComboBox { //contras
+                    id: currentModifier
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 40
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    indicator: Item{}
+                    leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
+                    font.pixelSize: Math.min(height, width) / 2.1
+                    model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
+                }
+                ComboBox { //trump
+                    id: currentTrump
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 45
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    indicator: Item{}
+                    leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
+                    font.pixelSize: Math.min(height, width) / 2.1
+                    model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
+                }
+                RoundButton { // add button
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 25
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    text: '+'
+                    font.pixelSize: Math.min(height, width) / 2.1
+                    highlighted: true
+                    onClicked: {
+                        if(currentFirstScore.acceptableInput &&
+                            currentFirstDeclarations.acceptableInput &&
+                            currentSecondScore.acceptableInput &&
+                            currentSecondDeclarations.acceptableInput &&
+                            currentBid.acceptableInput)
+                        {
+                            gameModel.append({
+                                "firstScore": Number.fromLocaleString(currentFirstScore.text),
+                                "firstDeclarations": Number.fromLocaleString(currentFirstDeclarations.text),
+                                "firstBlot": currentBlotReblot1.checked,
+                                "secondScore": Number.fromLocaleString(currentSecondScore.text),
+                                "secondDeclarations": Number.fromLocaleString(currentSecondDeclarations.text),
+                                "secondBlot": currentBlotReblot2.checked,
+                                "teamThatDeclaredContract": currentTeamInput.currentIndex,
+                                "bid": Number.fromLocaleString(currentBid.text),
+                                "isCapot":  currentCapotStatus.checked,
+                                "modifier": Math.pow(2, currentModifier.currentIndex),
+                                "trump": currentTrump.currentIndex,
+                                "pointsWonByFirstTeam": 0,
+                                "pointsWonBySecondTeam": 0
+                            })
+                        }
+                    }
+                }
+                Item { //filler
+                    Layout.minimumWidth: 10
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                }
             }
         }
     }
