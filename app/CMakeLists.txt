@@ -30,6 +30,7 @@ if(QT_VERSION VERSION_GREATER_EQUAL 6.2)
         RESOURCE_PREFIX "/qt/qml/"
         QML_FILES
             main.qml qml_resources/ScoreInput.qml qml_resources/ScoreName.qml
+        RESOURCES icons/question.png icons/settings.png
     )
 endif()
 

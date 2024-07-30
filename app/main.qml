@@ -24,21 +24,6 @@ ApplicationWindow {
 
     ListModel {
         id: gameModel
-        ListElement {
-            firstScore: 10
-            firstDeclarations: 5
-            firstBlot: false
-            secondScore: 152
-            secondDeclarations: 0
-            secondBlot: true
-            teamThatDeclaredContract: 0
-            bid: 13
-            trump: 1
-            isCapot: true
-            modifier: 4
-            pointsWonByFirstTeam: 0
-            pointsWonBySecondTeam: 0
-        }
     }
     header: RowLayout {
         id: namesOfScores
@@ -448,37 +433,10 @@ ApplicationWindow {
 
     footer: Column {
         Universal.theme: Universal.System
-        
-        RowLayout {
+        Rectangle {
             width: appWindow.width
-            height: 1.5 * appWindow.scoreHeight
-
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: largeScoreFactor
-                Layout.preferredHeight: 1.5 * appWindow.scoreHeight
-                Layout.minimumWidth: appWindow.minimumScoreWidth
-                Layout.minimumHeight: 1.5 * appWindow.minimumScoreHeight
-                color: "blue"
-                ScoreName { 
-                    anchors.fill: parent
-                    reduceFactor: 2.6
-                    text: appWindow.pointsAccumulated1
-                }
-            }
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: largeScoreFactor
-                Layout.preferredHeight: 1.5 * appWindow.scoreHeight
-                Layout.minimumWidth: appWindow.minimumScoreWidth
-                Layout.minimumHeight: 1.5 * appWindow.minimumScoreHeight
-                color: "blue"
-                ScoreName { 
-                    anchors.fill: parent
-                    reduceFactor: 2.6
-                    text: appWindow.pointsAccumulated2
-                }
-            }
+            height: 5
+            color: (Universal.theme == Universal.Light ? "sky" : "steel") + "blue"
         }
         Rectangle {
             width: appWindow.width
@@ -704,10 +662,79 @@ ApplicationWindow {
                         }
                     }
                 }
-                Item { //filler
-                    Layout.minimumWidth: 10
+                Item { Layout.minimumWidth: 10 } // filler
+            }
+        }
+        Rectangle{
+            width: appWindow.width
+            height: 1.5 * appWindow.scoreHeight + 10
+            color: (Universal.theme == Universal.Light ? "sky" : "steel") + "blue"
+            RowLayout {
+                anchors.fill: parent
+                
+                Item { Layout.minimumWidth: 5 } // filler
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: 3
+                    Layout.preferredHeight: 1.5 * appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: 1.5 * appWindow.minimumScoreHeight
+                    color: (Universal.theme == Universal.Dark ? "sky" : "steel") + "blue"
+                    radius: Math.min(width, height) / 3
+                    ScoreName { 
+                        anchors.fill: parent
+                        reduceFactor: 2.6
+                        text: appWindow.pointsAccumulated1
+                    }
+                }
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: 3
+                    Layout.preferredHeight: 1.5 * appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: 1.5 * appWindow.minimumScoreHeight
+                    color: (Universal.theme == Universal.Dark ? "sky" : "steel") + "blue"
+                    radius: Math.min(width, height) / 3
+                    ScoreName { 
+                        anchors.fill: parent
+                        reduceFactor: 2.6
+                        text: appWindow.pointsAccumulated2
+                    }
+                }
+                RoundButton {
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: 1
                     Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 25
                     Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    text: '-'
+                    font.pixelSize: Math.min(height, width) / 2.1
+                    onClicked: gameModel.remove(gameModel.count - 1)
+                }
+                RoundButton {
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: 1
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 25
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    icon.source: "icons/question.png"
+                    icon.width: width
+                    icon.height: height
+                    font.pixelSize: Math.min(height, width) / 2.1
+                }
+                RoundButton {
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: 1
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 25
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    icon.source: "icons/settings.png"
+                    icon.width: width
+                    icon.height: height
+                    font.pixelSize: Math.min(height, width) / 2.1
                 }
             }
         }
