@@ -729,6 +729,19 @@ ApplicationWindow {
                     icon.width: width
                     icon.height: height
                     font.pixelSize: Math.min(height, width) / 2.1
+                    onClicked: helpPage.open()
+                    Popup {
+                        id: helpPage
+                        x: -width
+                        y: -height
+                        TextArea {
+                            onFocusChanged: focus = false
+                            selectByMouse: false
+                            readOnly: true
+                            background: Item{}
+                            text: _helpText
+                        }
+                    }
                 }
                 RoundButton { // settings button
                     Layout.fillWidth: true
