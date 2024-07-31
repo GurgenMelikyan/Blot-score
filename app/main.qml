@@ -6,7 +6,7 @@ import QtCore
 import "qml_resources"
 
 ApplicationWindow {
-    Universal.theme: settings.appTheme
+    Universal.theme: currentTheme
     id: appWindow
     visible: true
     width: 640
@@ -18,6 +18,7 @@ ApplicationWindow {
     property int scoreHeight: height / 20
     property int minimumScoreWidth: 38
     property int minimumScoreHeight: 25
+    property int currentTheme: settings.appTheme
     property string themedBlue: (Universal.theme == Universal.Light ? "light" : "dark") + "blue"
 
     property int pointsAccumulated1: 0
@@ -163,25 +164,31 @@ ApplicationWindow {
 
             function calculatePointsWon()
             {
-                let pointsWon1, pointsWon2
+                let pointsWon1, pointsWon2, noTrumpIndex = 4, trump2x
+
+                if(noTrump2xSwitch.checked && trump == noTrumpIndex)
+                    trump2x = 2
+                else
+                    trump2x = 1
+
                 if(teamThatDeclaredContract == 0)
                     if(firstScore == 0 || (firstScore == 162 ? 250 : firstScore) < (bid - firstDeclarations - firstBlot * 2) * 10 || isCapot) { //first team lost
                         pointsWon1 = firstBlot * 2
-                        pointsWon2 = 16 + bid * modifier + firstDeclarations + secondDeclarations + secondBlot * 2
+                        pointsWon2 = 16 + bid * modifier * trump2x + firstDeclarations + secondDeclarations + secondBlot * 2
                     }
                     else { //first team won
-                        pointsWon1 = roundPoints(firstScore, true) + bid * modifier + firstDeclarations + firstBlot * 2 +
+                        pointsWon1 = roundPoints(firstScore, true) + bid * modifier * trump2x + firstDeclarations + firstBlot * 2 +
                                     (modifier > 1 ? secondDeclarations : 0)
                         pointsWon2 = secondBlot * 2 + (modifier > 1 ? 0 : roundPoints(secondScore, false) + secondDeclarations)
                     }
                 else
                     if(secondScore == 0 || (secondScore == 162 ? 250 : secondScore) < (bid - secondDeclarations - secondBlot * 2) * 10 || isCapot) {//second team lost
-                        pointsWon1 = 16 + bid * modifier + secondDeclarations + firstDeclarations + firstBlot * 2
+                        pointsWon1 = 16 + bid * modifier * trump2x + secondDeclarations + firstDeclarations + firstBlot * 2
                         pointsWon2 = secondBlot * 2
                     }
                     else { //second team won
                         pointsWon1 = firstBlot * 2 + (modifier > 1 ? 0 : roundPoints(firstScore, false) + firstDeclarations)
-                        pointsWon2 = roundPoints(secondScore, true) + bid * modifier + secondDeclarations + secondBlot * 2 +
+                        pointsWon2 = roundPoints(secondScore, true) + bid * modifier * trump2x + secondDeclarations + secondBlot * 2 +
                                     (modifier > 1 ? firstDeclarations : 0)
                     }
                 return [pointsWon1, pointsWon2]
@@ -433,7 +440,6 @@ ApplicationWindow {
     }
 
     footer: Column {
-        Universal.theme: Universal.System
         Rectangle {
             width: appWindow.width
             height: 5
@@ -443,7 +449,6 @@ ApplicationWindow {
             width: appWindow.width
             height: Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
             color: appWindow.themedBlue
-            Universal.theme: settings.appTheme
         
             ButtonGroup {
                 id: blotGroupForAddingScores
@@ -674,7 +679,7 @@ ApplicationWindow {
                 anchors.fill: parent
                 
                 Item { Layout.minimumWidth: 5 } // filler
-                Rectangle {
+                Rectangle { // points accumulated by the first team
                     Layout.fillWidth: true
                     Layout.horizontalStretchFactor: 3
                     Layout.preferredHeight: 1.5 * appWindow.scoreHeight
@@ -688,7 +693,7 @@ ApplicationWindow {
                         text: appWindow.pointsAccumulated1
                     }
                 }
-                Rectangle {
+                Rectangle { // points accumulated by the second team
                     Layout.fillWidth: true
                     Layout.horizontalStretchFactor: 3
                     Layout.preferredHeight: 1.5 * appWindow.scoreHeight
@@ -702,7 +707,7 @@ ApplicationWindow {
                         text: appWindow.pointsAccumulated2
                     }
                 }
-                RoundButton {
+                RoundButton { // remove button
                     Layout.fillWidth: true
                     Layout.horizontalStretchFactor: 1
                     Layout.preferredHeight: appWindow.scoreHeight
@@ -713,7 +718,7 @@ ApplicationWindow {
                     font.pixelSize: Math.min(height, width) / 2.1
                     onClicked: gameModel.remove(gameModel.count - 1)
                 }
-                RoundButton {
+                RoundButton { // help button
                     Layout.fillWidth: true
                     Layout.horizontalStretchFactor: 1
                     Layout.preferredHeight: appWindow.scoreHeight
@@ -725,7 +730,7 @@ ApplicationWindow {
                     icon.height: height
                     font.pixelSize: Math.min(height, width) / 2.1
                 }
-                RoundButton {
+                RoundButton { // settings button
                     Layout.fillWidth: true
                     Layout.horizontalStretchFactor: 1
                     Layout.preferredHeight: appWindow.scoreHeight
@@ -739,17 +744,20 @@ ApplicationWindow {
                     onClicked: settingsMenu.open()
                     Popup {
                         id: settingsMenu
-                        parent: Overlay.overlay
+                        x: -width
+                        y: -height
                         ColumnLayout {
                             anchors.fill: parent
                             TextField {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 Layout.horizontalStretchFactor: 1
+                                onFocusChanged: focus = false
                                 selectByMouse: false
                                 readOnly: true
                                 background: Item{}
                                 text: "Գունային ռեժիմ`" 
+                                horizontalAlignment: TextInput.AlignLeft
                             }
                             ColumnLayout {
                                 Layout.fillWidth: true
@@ -760,39 +768,39 @@ ApplicationWindow {
                                     Layout.fillWidth: true
                                     text: "Բաց"
                                     checked: settings.appTheme == Universal.Light
+                                    onClicked: appWindow.currentTheme = Universal.Light
                                 }
                                 RadioButton {
                                     id: darkThemeButton
                                     Layout.fillWidth: true
                                     text: "Մուգ"
                                     checked: settings.appTheme == Universal.Dark
+                                    onClicked: appWindow.currentTheme = Universal.Dark
                                 }
                                 RadioButton {
                                     id: systemThemeButton
                                     Layout.fillWidth: true
                                     text: "Ներքին"
                                     checked: settings.appTheme == Universal.System
+                                    onClicked: appWindow.currentTheme = Universal.System
                                 }
                             }
                             Switch {
+                                id: noTrump2xSwitch
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 Layout.horizontalStretchFactor: 1
                                 text: "A 2×" 
                                 ToolTip.visible: hovered
                                 ToolTip.text: "Անղոզ խաղի ժամանակ կրկնակի շատ միավոր"
-                            }
-                            Switch {
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                Layout.horizontalStretchFactor: 1
-                                text: "Կանաչ"
+                                checked: settings.noTrump2x
                             }
                         }
                     }
                     Settings {
                         id: settings
                         property int appTheme: Universal.System
+                        property bool noTrump2x: false
                     }
                     Component.onDestruction: {
                         if(lightThemeButton.checked)
@@ -801,6 +809,7 @@ ApplicationWindow {
                             settings.appTheme = Universal.Dark
                         if(systemThemeButton.checked)
                             settings.appTheme = Universal.System
+                        settings.noTrump2x = noTrump2xSwitch.checked
                     }
                 }
             }
