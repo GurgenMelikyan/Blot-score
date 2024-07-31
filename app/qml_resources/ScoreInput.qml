@@ -6,7 +6,7 @@ TextField {
     id: root
     required property int minimalValue
     required property int maximalValue
-    Universal.theme: Universal.System
+    Universal.theme: settings.appTheme
     Binding {
         target: root
         property: "color"

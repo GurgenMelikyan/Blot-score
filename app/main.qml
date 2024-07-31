@@ -2,10 +2,11 @@
 import QtQuick.Controls
 import QtQuick.Controls.Universal
 import QtQuick.Layouts
+import QtCore
 import "qml_resources"
 
 ApplicationWindow {
-    Universal.theme: Universal.System
+    Universal.theme: settings.appTheme
     id: appWindow
     visible: true
     width: 640
@@ -442,7 +443,7 @@ ApplicationWindow {
             width: appWindow.width
             height: Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
             color: appWindow.themedBlue
-            Universal.theme: Universal.System
+            Universal.theme: settings.appTheme
         
             ButtonGroup {
                 id: blotGroupForAddingScores
@@ -735,6 +736,72 @@ ApplicationWindow {
                     icon.width: width
                     icon.height: height
                     font.pixelSize: Math.min(height, width) / 2.1
+                    onClicked: settingsMenu.open()
+                    Popup {
+                        id: settingsMenu
+                        parent: Overlay.overlay
+                        ColumnLayout {
+                            anchors.fill: parent
+                            TextField {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Layout.horizontalStretchFactor: 1
+                                selectByMouse: false
+                                readOnly: true
+                                background: Item{}
+                                text: "Գունային ռեժիմ`" 
+                            }
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Layout.horizontalStretchFactor: 4
+                                RadioButton {
+                                    id: lightThemeButton
+                                    Layout.fillWidth: true
+                                    text: "Բաց"
+                                    checked: settings.appTheme == Universal.Light
+                                }
+                                RadioButton {
+                                    id: darkThemeButton
+                                    Layout.fillWidth: true
+                                    text: "Մուգ"
+                                    checked: settings.appTheme == Universal.Dark
+                                }
+                                RadioButton {
+                                    id: systemThemeButton
+                                    Layout.fillWidth: true
+                                    text: "Ներքին"
+                                    checked: settings.appTheme == Universal.System
+                                }
+                            }
+                            Switch {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Layout.horizontalStretchFactor: 1
+                                text: "A 2×" 
+                                ToolTip.visible: hovered
+                                ToolTip.text: "Անղոզ խաղի ժամանակ կրկնակի շատ միավոր"
+                            }
+                            Switch {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Layout.horizontalStretchFactor: 1
+                                text: "Կանաչ"
+                            }
+                        }
+                    }
+                    Settings {
+                        id: settings
+                        property int appTheme: Universal.System
+                    }
+                    Component.onDestruction: {
+                        if(lightThemeButton.checked)
+                            settings.appTheme = Universal.Light
+                        if(darkThemeButton.checked)
+                            settings.appTheme = Universal.Dark
+                        if(systemThemeButton.checked)
+                            settings.appTheme = Universal.System
+                    }
                 }
             }
         }

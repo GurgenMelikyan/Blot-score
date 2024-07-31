@@ -9,6 +9,9 @@ int main(int argc, char *argv[])
 #endif
 
     QGuiApplication app(argc, argv);
+    //app.setApplicationName("blot score");
+    //app.setOrganizationName("None");
+    //app.setOrganizationDomain("None");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/qt/qml/app/main.qml")));
