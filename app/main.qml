@@ -34,7 +34,7 @@ ApplicationWindow {
         ScoreName {
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: largeScoreFactor
-            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.preferredHeight: 2 * appWindow.scoreHeight
             Layout.minimumWidth: appWindow.minimumScoreWidth
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             text: "Մենք"
@@ -42,8 +42,8 @@ ApplicationWindow {
         ScoreName {
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.preferredHeight: appWindow.scoreHeight
-            Layout.minimumWidth: 50
+            Layout.preferredHeight: 2 * appWindow.scoreHeight
+            Layout.minimumWidth: appWindow.minimumScoreWidth
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
             text: "Դրսից1"
@@ -51,7 +51,7 @@ ApplicationWindow {
         ScoreName {
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: largeScoreFactor
-            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.preferredHeight: 2 * appWindow.scoreHeight
             Layout.minimumWidth: appWindow.minimumScoreWidth
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             text: "Դուք"
@@ -59,8 +59,8 @@ ApplicationWindow {
         ScoreName {
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.preferredHeight: appWindow.scoreHeight
-            Layout.minimumWidth: 50
+            Layout.preferredHeight: 2 * appWindow.scoreHeight
+            Layout.minimumWidth: appWindow.minimumScoreWidth
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
             text: "Դրսից2"
@@ -69,14 +69,14 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: smallScoreFactor
             Layout.minimumWidth: 10
-            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.preferredHeight: 2 * appWindow.scoreHeight
             Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
         }
         Item { // team filler
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.minimumWidth: 50
-            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.minimumWidth: 55
+            Layout.preferredHeight: 2 * appWindow.scoreHeight
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
         }
@@ -84,24 +84,25 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: smallScoreFactor
             Layout.minimumWidth: appWindow.minimumScoreWidth
-            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.preferredHeight: 2 * appWindow.scoreHeight
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
         }
         ScoreName {
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.preferredHeight: appWindow.scoreHeight
-            Layout.minimumWidth: 50
+            Layout.preferredHeight: 2 * appWindow.scoreHeight
+            Layout.minimumWidth: 25
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
             text: "Խոսացած"
+            reduceFactor: 2.6
         }
         Item { // contras filler
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: smallScoreFactor
             Layout.minimumWidth: 40
-            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.preferredHeight: 2 * appWindow.scoreHeight
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
         }
@@ -109,14 +110,9 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: smallScoreFactor
             Layout.minimumWidth: 45
-            Layout.preferredHeight: appWindow.scoreHeight
+            Layout.preferredHeight: 2 * appWindow.scoreHeight
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
-        }
-        Item { //filler
-            Layout.fillWidth: true
-            Layout.preferredHeight: appWindow.scoreHeight
-            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
         }
     }
     ListView {

@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     //app.setOrganizationName("None");
     //app.setOrganizationDomain("None");
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("_helpText", QString(readFile(std::filesystem::current_path() / "support.txt").c_str()));
+    engine.rootContext()->setContextProperty("_helpText", QString(readFile(std::filesystem::current_path() / "app" / "support.txt").c_str()));
     engine.load(QUrl(QStringLiteral("qrc:/qt/qml/app/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
