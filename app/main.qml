@@ -728,14 +728,19 @@ ApplicationWindow {
                     onClicked: helpPage.open()
                     Popup {
                         id: helpPage
+                        width: appWindow.width - parent.width * 2
+                        height: appWindow.height - parent.height
                         x: -width
                         y: -height
+                        font.pixelSize: Math.min(width, height) / 20
                         TextArea {
+                            anchors.fill: parent
                             onFocusChanged: focus = false
                             selectByMouse: false
                             readOnly: true
                             background: Item{}
                             text: _helpText
+                            wrapMode: TextArea.WordWrap
                         }
                     }
                 }
@@ -753,8 +758,11 @@ ApplicationWindow {
                     onClicked: settingsMenu.open()
                     Popup {
                         id: settingsMenu
+                        width: Math.max(appWindow.width / 5, 150)
+                        height: Math.max(appWindow.height / 2, 200)
                         x: -width
                         y: -height
+                        font.pixelSize: Math.min(width, height) / 15
                         ColumnLayout {
                             anchors.fill: parent
                             TextField {
@@ -767,6 +775,7 @@ ApplicationWindow {
                                 background: Item{}
                                 text: "Գունային ռեժիմ`" 
                                 horizontalAlignment: TextInput.AlignLeft
+                                wrapMode: TextInput.WordWrap
                             }
                             ColumnLayout {
                                 Layout.fillWidth: true

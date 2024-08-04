@@ -5,7 +5,7 @@ import QtQuick.Controls.Universal
 Item {
     property alias text: name.text
     property double reduceFactor: 3
-    TextArea {
+    TextField {
         id: name
         anchors {
             verticalCenter: parent.verticalCenter

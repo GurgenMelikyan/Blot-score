@@ -1,4 +1,4 @@
-#include <QGuiApplication>
+﻿#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <qquickstyle.h>
@@ -22,9 +22,8 @@ int main(int argc, char *argv[])
 #endif
 
     QGuiApplication app(argc, argv);
-    //app.setApplicationName("blot score");
-    //app.setOrganizationName("None");
-    //app.setOrganizationDomain("None");
+    app.setApplicationName("Բլոտի հաշիվ");
+    app.setOrganizationName("Gurgen Melikyan");
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("_helpText", QString(readFile(std::filesystem::current_path() / "app" / "support.txt").c_str()));
     engine.load(QUrl(QStringLiteral("qrc:/qt/qml/app/main.qml")));
