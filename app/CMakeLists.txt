@@ -44,6 +44,13 @@ target_link_libraries(app
         Qt::Quick Qt6::QuickControls2
 )
 
+include(GNUInstallDirs)
+install(TARGETS app
+    BUNDLE DESTINATION .
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
 if(Qt6_FOUND)
     qt_import_qml_plugins(app)
 endif()

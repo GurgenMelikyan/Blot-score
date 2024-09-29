@@ -732,15 +732,26 @@ ApplicationWindow {
                         height: appWindow.height - parent.height
                         x: -width
                         y: -height
-                        font.pixelSize: Math.min(width, height) / 20
-                        TextArea {
+                        ScrollView{
                             anchors.fill: parent
-                            onFocusChanged: focus = false
-                            selectByMouse: false
-                            readOnly: true
-                            background: Item{}
-                            text: _helpText
-                            wrapMode: TextArea.WordWrap
+                            font.pixelSize: Math.min(width, height) / 20
+                            TextArea {
+                                anchors.fill: parent
+                                onFocusChanged: focus = false
+                                selectByMouse: false
+                                readOnly: true
+                                background: Item{}
+                                text: "Մուտքագրեք որևէ թմի հավաքած սաիները (0-ից 162) ներքևի հատվածում։\n" + //really unproffesional, I know
+                                      "Նշեք թե ինչ ունեք դրսից(չհաշված բլոտ-ռեբլոտ)։\n" +
+                                      "Նշեք որ թիմն է խոսասացել իր մաանրամասներով։\n"+
+                                      "Այնուհետև սեղմեք '+' կոճակին խաղը ավելացնելու համար։\n"+
+                                      "Կարող եք հեռացնել վերջին խաղը '-' կոճակով։\n\n"+
+
+                                      "Յուրաքանչյուր խաղի տվյալները կարելի է փոխել ավելացնելուց հետո,\n"+
+                                      "ուղղակի սեղմեք համապատասխան դաշտի վրա։\n"+
+                                      "Խաղի ընդհանուր հաշիվը ցույց է տրված ներքևի 2 դաշտերում։\n"
+                                wrapMode: TextArea.WordWrap
+                            }
                         }
                     }
                 }
