@@ -13,10 +13,10 @@ ApplicationWindow {
     height: 480
     title: "Բլոտի հաշիվ"
 
-    property int largeScoreFactor: 28
+    property int largeScoreFactor: 22
     property int smallScoreFactor: 3
     property int scoreHeight: height / 20
-    property int minimumScoreWidth: 38
+    property int minimumScoreWidth: 50
     property int minimumScoreHeight: 25
     property int currentTheme: settings.appTheme
     property string themedBlue: (Universal.theme == Universal.Light ? "light" : "dark") + "blue"
@@ -69,47 +69,32 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: smallScoreFactor
             Layout.minimumWidth: 10
+            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             Layout.preferredHeight: 2 * appWindow.scoreHeight
             Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
         }
-        Item { // team filler
+        Item { //capot filler
+            Layout.fillWidth: true
+            Layout.horizontalStretchFactor: smallScoreFactor
+            Layout.preferredHeight: 2 * appWindow.scoreHeight
+            Layout.minimumWidth: (25 + appWindow.minimumScoreWidth) / 2 // to center scorename
+            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
+            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
+        }
+        ScoreName { // team filler
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: smallScoreFactor
             Layout.minimumWidth: 55
             Layout.preferredHeight: 2 * appWindow.scoreHeight
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
+            text: "Խոսացած"
+            reduceFactor: 2.6
         }
         Item { // bid filler
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.minimumWidth: appWindow.minimumScoreWidth
-            Layout.preferredHeight: 2 * appWindow.scoreHeight
-            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
-        }
-        ScoreName {
-            Layout.fillWidth: true
-            Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.preferredHeight: 2 * appWindow.scoreHeight
-            Layout.minimumWidth: 25
-            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
-            text: "Խոսացած"
-            reduceFactor: 2.6
-        }
-        Item { // contras filler
-            Layout.fillWidth: true
-            Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.minimumWidth: 40
-            Layout.preferredHeight: 2 * appWindow.scoreHeight
-            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
-        }
-        Item { // trump filler
-            Layout.fillWidth: true
-            Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.minimumWidth: 45
+            Layout.minimumWidth: (25 + appWindow.minimumScoreWidth) / 2 // to center scorename
             Layout.preferredHeight: 2 * appWindow.scoreHeight
             Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
             Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
@@ -207,7 +192,7 @@ ApplicationWindow {
             GridLayout {
                 anchors.fill: parent
 
-                columns: 10
+                columns: 8
                 //first row -------------------------------------------------------------------------
                 ScoreInput { //first score
                     id: firstScoreInput
@@ -330,36 +315,6 @@ ApplicationWindow {
                     checked: { checked = scores.isCapot }
                     onClicked: { scores.isCapot ^= true }
                 }
-                ComboBox { //contras
-                    id: contrasInput
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 40
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    indicator: Item{}
-                    leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
-                    font.pixelSize: Math.min(height, width) / 2.1
-                    model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
-                    currentIndex: { currentIndex = Math.log2(scores.modifier) }
-                    Binding { scores.modifier: Math.pow(2, contrasInput.currentIndex) }
-                }
-                ComboBox { //trump
-                    id: trumpInput
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 45
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    indicator: Item{}
-                    leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
-                    font.pixelSize: Math.min(height, width) / 2.1
-                    model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
-                    currentIndex: { currentIndex = scores.trump }
-                    Binding { scores.trump: trumpInput.currentIndex }
-                }
 
                 //second row -------------------------------------------------------------------------
                 Rectangle {
@@ -431,6 +386,38 @@ ApplicationWindow {
                             blotGroupForScores.lastClicked = blotReblot2
                     }
                 }
+                Item { //filler
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
+                }
+                ComboBox { //contras
+                    id: contrasInput
+                    Layout.fillWidth: true
+                    Layout.maximumWidth: teamInput.width
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    indicator: Item{}
+                    leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
+                    font.pixelSize: Math.min(height, width) / 2.1
+                    model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
+                    currentIndex: { currentIndex = Math.log2(scores.modifier) }
+                    Binding { scores.modifier: Math.pow(2, contrasInput.currentIndex) }
+                }
+                ComboBox { //trump
+                    id: trumpInput
+                    Layout.fillWidth: true
+                    Layout.columnSpan: 2
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    indicator: Item{}
+                    leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
+                    font.pixelSize: Math.min(height, width) / 2.1
+                    model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
+                    currentIndex: { currentIndex = scores.trump }
+                    Binding { scores.trump: trumpInput.currentIndex }
+                }
             }
         }
     }
@@ -451,11 +438,13 @@ ApplicationWindow {
                 property var lastClicked: null
             }
 
-            RowLayout {
+            GridLayout {
                 anchors.fill: parent
+                columns: 10
                 //first row
                 ScoreInput { //first score
                     id: currentFirstScore
+                    Layout.rowSpan: 2
                     Layout.fillWidth: true
                     Layout.horizontalStretchFactor: largeScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
@@ -470,44 +459,22 @@ ApplicationWindow {
                         when: currentFirstScore.acceptableInput
                     }
                 }
-                ColumnLayout {
+                ScoreInput { //first declarations
+                    id: currentFirstDeclarations
                     Layout.fillWidth: true
                     Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: 2 * appWindow.scoreHeight + Layout.columnSpacing
+                    Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: 2 * appWindow.minimumScoreHeight + Layout.columnSpacing
-                    Layout.maximumWidth: Math.max((height - Layout.columnSpacing) / 2, Layout.minimumWidth)
-                    ScoreInput { //first declarations
-                        id: currentFirstDeclarations
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        minimalValue: 0
-                        maximalValue: 200
-                        text: '0'
-                        onTextChanged: currentSecondDeclarations.text = '0'
-                    }
-                    Button { //blot reblot 1
-                        id: currentBlotReblot1
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        text: "Բլոտ"
-                        font.pixelSize: Math.min(height, width) / 3.5
-                        ButtonGroup.group: blotGroupForAddingScores
-                        enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
-                        onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
-                        checkable: true
-                        onClicked: {
-                            if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot1) {
-                                blotGroupForAddingScores.checkState = Qt.Unchecked
-                                blotGroupForAddingScores.lastClicked = null
-                            }
-                            else
-                                blotGroupForAddingScores.lastClicked = currentBlotReblot1
-                        }
-                    }
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    minimalValue: 0
+                    maximalValue: 200
+                    text: '0'
+                    onTextChanged: currentSecondDeclarations.text = '0'
                 }
                 ScoreInput { //second score
                     id: currentSecondScore
+                    Layout.rowSpan: 2
                     Layout.fillWidth: true
                     Layout.horizontalStretchFactor: largeScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
@@ -522,43 +489,21 @@ ApplicationWindow {
                         when: currentSecondScore.acceptableInput
                     }
                 }
-                ColumnLayout {
+                ScoreInput { //second declarations
+                    id: currentSecondDeclarations
                     Layout.fillWidth: true
                     Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: 2 * appWindow.scoreHeight + Layout.columnSpacing
+                    Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: 2 * appWindow.minimumScoreHeight + Layout.columnSpacing
-                    Layout.maximumWidth: Math.max((height - Layout.columnSpacing) / 2, Layout.minimumWidth)
-                    ScoreInput { //second declarations
-                        id: currentSecondDeclarations
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        minimalValue: 0
-                        maximalValue: 200
-                        text: '0'
-                        onTextChanged: currentFirstDeclarations.text = '0'
-                    }
-                    Button { //blot reblot 2
-                        id: currentBlotReblot2
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        text: "Բլոտ"
-                        font.pixelSize: Math.min(height, width) / 3.5
-                        ButtonGroup.group: blotGroupForAddingScores
-                        enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
-                        onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
-                        checkable: true
-                        onClicked: {
-                            if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot2) {
-                                blotGroupForAddingScores.checkState = Qt.Unchecked
-                                blotGroupForAddingScores.lastClicked = null
-                            }
-                            else
-                                blotGroupForAddingScores.lastClicked = currentBlotReblot2
-                        }
-                    }
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    minimalValue: 0
+                    maximalValue: 200
+                    text: '0'
+                    onTextChanged: currentFirstDeclarations.text = '0'
                 }
                 Item { //filler
+                    Layout.rowSpan: 2
                     Layout.fillWidth: true
                     Layout.horizontalStretchFactor: smallScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
@@ -603,33 +548,8 @@ ApplicationWindow {
                     font.pixelSize: Math.min(height, width) / 2.1
                     checkable: true
                 }
-                ComboBox { //contras
-                    id: currentModifier
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 40
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    indicator: Item{}
-                    leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
-                    font.pixelSize: Math.min(height, width) / 2.1
-                    model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
-                }
-                ComboBox { //trump
-                    id: currentTrump
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 45
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    indicator: Item{}
-                    leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
-                    font.pixelSize: Math.min(height, width) / 2.1
-                    model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
-                }
                 RoundButton { // add button
+                    Layout.rowSpan: 2
                     Layout.fillWidth: true
                     Layout.horizontalStretchFactor: smallScoreFactor
                     Layout.preferredHeight: appWindow.scoreHeight
@@ -665,6 +585,79 @@ ApplicationWindow {
                     }
                 }
                 Item { Layout.minimumWidth: 10 } // filler
+
+                //second row
+                Button { //blot reblot 1
+                    id: currentBlotReblot1
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    text: "Բլոտ"
+                    font.pixelSize: Math.min(height, width) / 3.5
+                    ButtonGroup.group: blotGroupForAddingScores
+                    enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
+                    onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
+                    checkable: true
+                    onClicked: {
+                        if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot1) {
+                            blotGroupForAddingScores.checkState = Qt.Unchecked
+                            blotGroupForAddingScores.lastClicked = null
+                        }
+                        else
+                            blotGroupForAddingScores.lastClicked = currentBlotReblot1
+                    }
+                }
+                Button { //blot reblot 2
+                    id: currentBlotReblot2
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    text: "Բլոտ"
+                    font.pixelSize: Math.min(height, width) / 3.5
+                    ButtonGroup.group: blotGroupForAddingScores
+                    enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
+                    onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
+                    checkable: true
+                    onClicked: {
+                        if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot2) {
+                            blotGroupForAddingScores.checkState = Qt.Unchecked
+                            blotGroupForAddingScores.lastClicked = null
+                        }
+                        else
+                            blotGroupForAddingScores.lastClicked = currentBlotReblot2
+                    }
+                }
+                ComboBox { //contras
+                    id: currentModifier
+                    Layout.fillWidth: true
+                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 55
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    indicator: Item{}
+                    leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
+                    font.pixelSize: Math.min(height, width) / 2.1
+                    model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
+                }
+                ComboBox { //trump
+                    id: currentTrump
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.columnSpan: 2
+                    Layout.minimumWidth: 45
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    indicator: Item{}
+                    leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
+                    font.pixelSize: Math.min(height, width) / 2.1
+                    model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
+                }
             }
         }
         Rectangle{
