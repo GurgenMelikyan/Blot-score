@@ -13,93 +13,187 @@ ApplicationWindow {
     height: 480
     title: "Բլոտի հաշիվ"
 
+    property string firstTeamName: "Մենք"
+    property string secondTeamName: "Դուք"
+    property int pointsAccumulated1: 0
+    property int pointsAccumulated2: 0
+
     property int largeScoreFactor: 22
     property int smallScoreFactor: 3
     property int scoreHeight: height / 20
     property int minimumScoreWidth: 50
     property int minimumScoreHeight: 25
     property int currentTheme: settings.appTheme
-    property string themedBlue: (Universal.theme == Universal.Light ? "light" : "dark") + "blue"
-
-    property int pointsAccumulated1: 0
-    property int pointsAccumulated2: 0
+    property string backgroundColor: Universal.theme == Universal.Light ? "white" : "black"
+    property string textColor: Universal.theme == Universal.Light ? "black" : "white"
+    property string backColor: Universal.theme == Universal.Light ? "darkgray" : "dimgray"
+    property string frontColor: Universal.theme == Universal.Light ? "lightgray" : "gray"
 
     ListModel {
         id: gameModel
     }
-    header: RowLayout {
-        id: namesOfScores
+    header:  Column { Rectangle {
         width: appWindow.width
-        height: Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
-        ScoreName {
-            Layout.fillWidth: true
-            Layout.horizontalStretchFactor: largeScoreFactor
-            Layout.preferredHeight: 2 * appWindow.scoreHeight
-            Layout.minimumWidth: appWindow.minimumScoreWidth
-            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-            text: "Մենք"
+        height: 5 + Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
+        color: appWindow.backColor
+        RowLayout {
+                anchors.fill: parent
+                RoundButton { // help button
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 25
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    icon.source: "icons/question.png"
+                    icon.width: width
+                    icon.height: height
+                    font.pixelSize: Math.min(height, width) / 2.1
+                    onClicked: helpPage.open()
+                    Popup {
+                        id: helpPage
+                        width: appWindow.width - parent.width
+                        height: appWindow.height - parent.height
+                        x: parent.width
+                        y: parent.height
+                        ScrollView{
+                            anchors.fill: parent
+                            font.pixelSize: Math.min(width, height) / 20
+                            TextArea {
+                                anchors.fill: parent
+                                onFocusChanged: focus = false
+                                selectByMouse: false
+                                readOnly: true
+                                background: Item{}
+                                text: "Մուտքագրեք որևէ թմի հավաքած սաիները (0-ից 162) ներքևի հատվածում։\n" + //really unproffesional, I know
+                                      "Նշեք թե ինչ ունեք դրսից(չհաշված բլոտ-ռեբլոտ)։\n" +
+                                      "Նշեք որ թիմն է խոսասացել իր մաանրամասներով։\n"+
+                                      "Այնուհետև սեղմեք '+' կոճակին խաղը ավելացնելու համար։\n"+
+                                      "Կարող եք հեռացնել վերջին խաղը '-' կոճակով։\n\n"+
+
+                                      "Յուրաքանչյուր խաղի տվյալները կարելի է փոխել ավելացնելուց հետո,\n"+
+                                      "ուղղակի սեղմեք համապատասխան դաշտի վրա։\n"+
+                                      "Խաղի ընդհանուր հաշիվը ցույց է տրված ներքևի 2 դաշտերում։\n"
+                                wrapMode: TextArea.WordWrap
+                            }
+                        }
+                    }
+                }
+                ScoreName {
+                    id: firstTeamNameInput
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 2 * appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
+                    text: appWindow.firstTeamName
+                    editable: true
+                    Binding {
+                        appWindow.firstTeamName: firstTeamNameInput.text
+                    }
+                }
+                Rectangle {
+                    Layout.preferredWidth: 1
+                    Layout.fillHeight: true
+                    color: Universal.theme == Universal.Light ? "dimgray" : "darkgray"
+                }
+                ScoreName {
+                    id: secondTeamNameInput
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 2 * appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
+                    text: appWindow.secondTeamName
+                    editable: true
+                    Binding {
+                        appWindow.secondTeamName: secondTeamNameInput.text
+                    }
+                }
+                RoundButton { // settings button
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.minimumWidth: 25
+                    Layout.minimumHeight: appWindow.minimumScoreHeight
+                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                    icon.source: "icons/settings.png"
+                    icon.width: width
+                    icon.height: height
+                    font.pixelSize: Math.min(height, width) / 2.1
+                    onClicked: settingsMenu.open()
+                    Popup {
+                        id: settingsMenu
+                        width: Math.max(appWindow.width / 5, 150)
+                        height: Math.max(appWindow.height / 2, 200)
+                        x: -width
+                        y: parent.height
+                        font.pixelSize: Math.min(width, height) / 15
+                        ColumnLayout {
+                            anchors.fill: parent
+                            TextField {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Layout.horizontalStretchFactor: 1
+                                onFocusChanged: focus = false
+                                selectByMouse: false
+                                readOnly: true
+                                background: Item{}
+                                text: "Գունային ռեժիմ`" 
+                                horizontalAlignment: TextInput.AlignLeft
+                                wrapMode: TextInput.WordWrap
+                            }
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Layout.horizontalStretchFactor: 4
+                                RadioButton {
+                                    id: lightThemeButton
+                                    Layout.fillWidth: true
+                                    text: "Բաց"
+                                    checked: settings.appTheme == Universal.Light
+                                    onClicked: appWindow.currentTheme = Universal.Light
+                                }
+                                RadioButton {
+                                    id: darkThemeButton
+                                    Layout.fillWidth: true
+                                    text: "Մուգ"
+                                    checked: settings.appTheme == Universal.Dark
+                                    onClicked: appWindow.currentTheme = Universal.Dark
+                                }
+                                RadioButton {
+                                    id: systemThemeButton
+                                    Layout.fillWidth: true
+                                    text: "Ներքին"
+                                    checked: settings.appTheme == Universal.System
+                                    onClicked: appWindow.currentTheme = Universal.System
+                                }
+                            }
+                            Switch {
+                                id: noTrump2xSwitch
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Layout.horizontalStretchFactor: 1
+                                text: "A 2×" 
+                                ToolTip.visible: hovered
+                                ToolTip.text: "Անղոզ խաղի ժամանակ կրկնակի շատ միավոր"
+                                checked: settings.noTrump2x
+                            }
+                        }
+                    }
+                    Settings {
+                        id: settings
+                        property int appTheme: Universal.System
+                        property bool noTrump2x: false
+                    }
+                    Component.onDestruction: {
+                        if(lightThemeButton.checked)
+                            settings.appTheme = Universal.Light
+                        if(darkThemeButton.checked)
+                            settings.appTheme = Universal.Dark
+                        if(systemThemeButton.checked)
+                            settings.appTheme = Universal.System
+                        settings.noTrump2x = noTrump2xSwitch.checked
+                    }
+                }
         }
-        ScoreName {
-            Layout.fillWidth: true
-            Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.preferredHeight: 2 * appWindow.scoreHeight
-            Layout.minimumWidth: appWindow.minimumScoreWidth
-            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
-            text: "Դրսից1"
-        }
-        ScoreName {
-            Layout.fillWidth: true
-            Layout.horizontalStretchFactor: largeScoreFactor
-            Layout.preferredHeight: 2 * appWindow.scoreHeight
-            Layout.minimumWidth: appWindow.minimumScoreWidth
-            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-            text: "Դուք"
-        }
-        ScoreName {
-            Layout.fillWidth: true
-            Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.preferredHeight: 2 * appWindow.scoreHeight
-            Layout.minimumWidth: appWindow.minimumScoreWidth
-            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
-            text: "Դրսից2"
-        }
-        Item {  //filler
-            Layout.fillWidth: true
-            Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.minimumWidth: 10
-            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-            Layout.preferredHeight: 2 * appWindow.scoreHeight
-            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
-        }
-        Item { //capot filler
-            Layout.fillWidth: true
-            Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.preferredHeight: 2 * appWindow.scoreHeight
-            Layout.minimumWidth: (25 + appWindow.minimumScoreWidth) / 2 // to center scorename
-            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
-        }
-        ScoreName { // team filler
-            Layout.fillWidth: true
-            Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.minimumWidth: 55
-            Layout.preferredHeight: 2 * appWindow.scoreHeight
-            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
-            text: "Խոսացած"
-            reduceFactor: 2.6
-        }
-        Item { // bid filler
-            Layout.fillWidth: true
-            Layout.horizontalStretchFactor: smallScoreFactor
-            Layout.minimumWidth: (25 + appWindow.minimumScoreWidth) / 2 // to center scorename
-            Layout.preferredHeight: 2 * appWindow.scoreHeight
-            Layout.minimumHeight: 2 * appWindow.minimumScoreHeight
-            Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
-        }
-    }
+        } Rectangle { width: appWindow.width; height: 20; color: appWindow.backgroundColor} }
     ListView {
         anchors.fill: parent
         spacing: 15
@@ -188,377 +282,560 @@ ApplicationWindow {
                 appWindow.pointsAccumulated2 += pointsWonBySecondTeam
                 pointsWon2 = pointsWonBySecondTeam
             }
-
-            GridLayout {
-                anchors.fill: parent
-
-                columns: 8
-                //first row -------------------------------------------------------------------------
-                ScoreInput { //first score
-                    id: firstScoreInput
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: largeScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    minimalValue: 0
-                    maximalValue: 162
-                    text: { text = scores.firstScore }
-                    Binding {
-                        scores.firstScore: firstScoreInput.text
-                        when: firstScoreInput.acceptableInput
-                    }
-                    Binding {
-                        secondScoreInput.text:  162 - firstScoreInput.text
-                        when: firstScoreInput.acceptableInput
-                    }
-                }
-                ScoreInput { //first declarations
-                    id: firstDeclarationsInput
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    minimalValue: 0
-                    maximalValue: 200
-                    text: { text = scores.firstDeclarations }
-                    Binding { 
-                        scores.firstDeclarations: firstDeclarationsInput.text
-                        when: firstDeclarationsInput.acceptableInput
-                    }
-                }
-                ScoreInput { //second score
-                    id: secondScoreInput
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: largeScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    minimalValue: 0
-                    maximalValue: 162
-                    text: { text = scores.secondScore }
-                    Binding {
-                        scores.secondScore: secondScoreInput.text
-                        when: secondScoreInput.acceptableInput
-                    }
-                    Binding {
-                        firstScoreInput.text: 162 - secondScoreInput.text
-                        when: secondScoreInput.acceptableInput
-                    }
-                }
-                ScoreInput { //second declarations
-                    id: secondDeclarationsInput
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    minimalValue: 0
-                    maximalValue: 200
-                    text: { text = scores.secondDeclarations }
-                    Binding { 
-                        scores.secondDeclarations: secondDeclarationsInput.text
-                        when: secondDeclarationsInput.acceptableInput
-                    }
-                }
-                Item { //filler
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 10
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                }
-                ComboBox { //Team that declared contract
-                    id: teamInput
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 55
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    indicator: Item{}
-                    font.pixelSize: Math.min(height, width) / 2.6
-                    currentIndex: { currentIndex = scores.teamThatDeclaredContract }
-                    Text { id: selectedTeam; text: parent.currentText; color: "transparent" } // to get size of the team's name
-                    leftPadding: (width - selectedTeam.implicitWidth) / 2 - ((width - height < 10) ? 20 : 10) // to center options
-                    model: ["Մենք", "Դուք"]
-                    Binding { scores.teamThatDeclaredContract: teamInput.currentIndex }
-                }
-                ScoreInput { //bid
-                    id: bidInput
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    minimalValue: 8
-                    maximalValue: 200
-                    text: { text = scores.bid }
-                    Binding { scores.bid: bidInput.text }
-                }
-                Button { //capot
-                    id: capotInput
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 25
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    text: 'Կ'
-                    font.pixelSize: Math.min(height, width) / 2.1
-                    checkable: true
-                    checked: { checked = scores.isCapot }
-                    onClicked: { scores.isCapot ^= true }
-                }
-
-                //second row -------------------------------------------------------------------------
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    ScoreName {
-                        anchors.fill: parent
-                        text: "+" + scores.pointsWonByFirstTeam
-                    }
-                    color: appWindow.themedBlue
-                }
-                Button { //blot reblot 1
-                    id: blotReblot1
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    text: "Բլոտ"
-                    font.pixelSize: Math.min(height, width) / 3.5
-                    ButtonGroup.group: blotGroupForScores
-                    enabled: scores.trump < 4 // enabled if there is a suit selected
-                    checkable: true
-                    checked: scores.firstBlot && scores.trump < 4
-                    Binding { scores.firstBlot: blotReblot1.checked }
-                    onClicked: {
-                        if(checked && blotGroupForScores.lastClicked == blotReblot1) {
-                            blotGroupForScores.checkState = Qt.Unchecked
-                            blotGroupForScores.lastClicked = null
+            RowLayout{
+                height: parent.height
+                width: parent.width
+                Item {} //filler
+                Rectangle { // first team
+                        id: firstTeamScore
+                        height: parent.height
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        radius: Math.min(width, height) / 3
+                        color: appWindow.frontColor
+                        ScoreName {
+                            anchors.fill: parent
+                            text: "+" + scores.pointsWonByFirstTeam
                         }
-                        else
-                            blotGroupForScores.lastClicked = blotReblot1
-                    }
-                }
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    ScoreName {
-                        anchors.fill: parent
-                        reduceFactor: 2.6
-                        text: "+" + scores.pointsWonBySecondTeam
-                    }
-                    color: appWindow.themedBlue
-                }
-                Button { //blot reblot 2
-                    id: blotReblot2
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    text: "Բլոտ"
-                    font.pixelSize: Math.min(height, width) / 3.5
-                    ButtonGroup.group: blotGroupForScores
-                    enabled: scores.trump < 4 // enabled if there is a suit selected
-                    checkable: true
-                    checked: scores.secondBlot && scores.trump < 4
-                    Binding { scores.secondBlot: blotReblot2.checked }
-                    onClicked: {
-                        if(checked && blotGroupForScores.lastClicked == blotReblot2) {
-                            blotGroupForScores.checkState = Qt.Unchecked
-                            blotGroupForScores.lastClicked = null
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: firstTeamMenu.popup(0, height + 10)
                         }
-                        else
-                            blotGroupForScores.lastClicked = blotReblot2
-                    }
+                        Menu {
+                            id: firstTeamMenu
+                            title: appWindow.firstTeamName
+                            width: appWindow.width
+                            GridLayout {
+                                width: parent.width
+                                height: 2 * appWindow.scoreHeight + columnSpacing
+                                columns: 3
+                                ScoreName {
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: 80
+                                    text: "Հավաքած միավոր"
+                                }
+                                ScoreInput { //first score
+                                    id: firstScoreInput
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                                    Layout.columnSpan: 2
+                                    minimalValue: 0
+                                    maximalValue: 162
+                                    text: { text = scores.firstScore }
+                                    Binding {
+                                        scores.firstScore: firstScoreInput.text
+                                        when: firstScoreInput.acceptableInput
+                                    }
+                                    Binding {
+                                        secondScoreInput.text:  162 - firstScoreInput.text
+                                        when: firstScoreInput.acceptableInput
+                                    }
+                                }
+                                ScoreName {
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: 80
+                                    text: "Դրսից միավորներ"
+                                }
+                                Button { //blot reblot 1
+                                    id: blotReblot1
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                                    text: "Բլոտ"
+                                    font.pixelSize: Math.min(height, width) / 3.5
+                                    ButtonGroup.group: blotGroupForScores
+                                    enabled: scores.trump < 4 // enabled if there is a suit selected
+                                    checkable: true
+                                    checked: scores.firstBlot && scores.trump < 4
+                                    Binding { scores.firstBlot: blotReblot1.checked }
+                                    onClicked: {
+                                        if(checked && blotGroupForScores.lastClicked == blotReblot1) {
+                                            blotGroupForScores.checkState = Qt.Unchecked
+                                            blotGroupForScores.lastClicked = null
+                                        }
+                                        else
+                                            blotGroupForScores.lastClicked = blotReblot1
+                                    }
+                                }
+                                ScoreInput { //first declarations
+                                    id: firstDeclarationsInput
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                                    minimalValue: 0
+                                    maximalValue: 200
+                                    text: { text = scores.firstDeclarations }
+                                    Binding { 
+                                        scores.firstDeclarations: firstDeclarationsInput.text
+                                        when: firstDeclarationsInput.acceptableInput
+                                    }
+                                }
+                            }
+                        }
                 }
-                Item { //filler
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height / 2, Layout.minimumWidth)
+                ScoreName { //declarations
+                        height: parent.height
+                        widthForPixelSize: appWindow.width / 3
+                        reduceFactor: 3.5
+                        implicitWidth: textWidth
+                        Layout.fillHeight: true
+                        text: {
+                            let declaration = ""
+                            declaration += bidInput.text + (capotInput.checked ? 'K' : '')
+                            switch(contrasInput.currentIndex) {
+                                case 1: declaration += 'Ք'; break
+                                case 2: declaration += 'Ս'
+                            }
+                            switch(trumpInput.currentIndex) {
+                                case 0: declaration += '❤️'; break
+                                case 1: declaration += '♠️'; break
+                                case 2: declaration += '♦️'; break
+                                case 3: declaration += '♣️'; break
+                                case 4: declaration += 'A'
+                            }
+                            return declaration
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: declarationsMenu.popup(0, height + 10)
+                        }
+                        Menu {
+                            id: declarationsMenu
+                            title: "Հայտարարել ենք"
+                            width: Math.max(appWindow.width / 2, 25 + 2 * appWindow.minimumScoreWidth)
+                            rightPadding: -50 + (appWindow.width -  width) / 2 // for centering the popup
+                            rightInset: -50 + (appWindow.width -  width) / 2 // for centering the popup
+                            leftPadding: -(appWindow.width -  width) / 2
+                            leftInset: -(appWindow.width -  width) / 2
+                            bottomMargin: parent.height + generalScoreRow.height
+                            GridLayout {
+                                width: parent.width
+                                height: 2 * appWindow.scoreHeight + columnSpacing
+                                columns: 3
+                                ComboBox { //Team that declared contract
+                                    id: teamInput
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                                    indicator: Item{}
+                                    font.pixelSize: Math.min(height, width) / 2.6
+                                    currentIndex: { currentIndex = scores.teamThatDeclaredContract }
+                                    Text { id: selectedTeam; text: parent.currentText; color: "transparent" } // to get size of the team's name
+                                    leftPadding: (width - selectedTeam.implicitWidth) / 2 - ((width - height < 10) ? 20 : 10) // to center options
+                                    model: [appWindow.firstTeamName, appWindow.secondTeamName]
+                                    Binding { scores.teamThatDeclaredContract: teamInput.currentIndex }
+                                }
+                                Button { //capot
+                                    id: capotInput
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: 25
+                                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                                    text: 'Կ'
+                                    font.pixelSize: Math.min(height, width) / 2.1
+                                    checkable: true
+                                    checked: { checked = scores.isCapot }
+                                    onClicked: { scores.isCapot ^= true }
+                                }
+                                ScoreInput { //bid
+                                    id: bidInput
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                                    minimalValue: 8
+                                    maximalValue: 200
+                                    text: { text = scores.bid }
+                                    Binding { scores.bid: bidInput.text }
+                                }
+                                ComboBox { //contras
+                                    id: contrasInput
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: 55
+                                    indicator: Item{}
+                                    leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
+                                    font.pixelSize: Math.min(height, width) / 2.1
+                                    model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
+                                    currentIndex: { currentIndex = Math.log2(scores.modifier) }
+                                    Binding { scores.modifier: Math.pow(2, contrasInput.currentIndex) }
+                                }
+                                ComboBox { //trump
+                                    id: trumpInput
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: 45
+                                    Layout.columnSpan: 2
+                                    indicator: Item{}
+                                    leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
+                                    font.pixelSize: Math.min(height, width) / 2.1
+                                    model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
+                                    currentIndex: { currentIndex = scores.trump }
+                                    Binding { scores.trump: trumpInput.currentIndex }
+                                }
+                            }
+                        }
                 }
-                ComboBox { //contras
-                    id: contrasInput
-                    Layout.fillWidth: true
-                    Layout.maximumWidth: teamInput.width
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    indicator: Item{}
-                    leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
-                    font.pixelSize: Math.min(height, width) / 2.1
-                    model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
-                    currentIndex: { currentIndex = Math.log2(scores.modifier) }
-                    Binding { scores.modifier: Math.pow(2, contrasInput.currentIndex) }
+                Rectangle { // second team
+                        id: secondTeamScore
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        radius: Math.min(width, height) / 3
+                        color: appWindow.frontColor
+                        ScoreName {
+                            anchors.fill: parent
+                            text: "+" + scores.pointsWonBySecondTeam
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: secondTeamMenu.popup(0, height + 10)
+                        }
+                        Menu {
+                            id: secondTeamMenu
+                            title: appWindow.firstTeamName
+                            width: appWindow.width
+                            GridLayout {
+                                width: parent.width
+                                height: 2 * appWindow.scoreHeight + columnSpacing
+                                columns: 3
+                                ScoreName {
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: 80
+                                    text: "Հավաքած միավոր"
+                                }
+                                ScoreInput { //second score
+                                    id: secondScoreInput
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                                    Layout.columnSpan: 2
+                                    minimalValue: 0
+                                    maximalValue: 162
+                                    text: { text = scores.secondScore }
+                                    Binding {
+                                        scores.secondScore: secondScoreInput.text
+                                        when: secondScoreInput.acceptableInput
+                                    }
+                                    Binding {
+                                        firstScoreInput.text: 162 - secondScoreInput.text
+                                        when: secondScoreInput.acceptableInput
+                                    }
+                                }
+                                ScoreName {
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: 80
+                                    text: "Դրսից միավորներ"
+                                }
+                                Button { //blot reblot 2
+                                    id: blotReblot2
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                                    text: "Բլոտ"
+                                    font.pixelSize: Math.min(height, width) / 3.5
+                                    ButtonGroup.group: blotGroupForScores
+                                    enabled: scores.trump < 4 // enabled if there is a suit selected
+                                    checkable: true
+                                    checked: scores.secondBlot && scores.trump < 4
+                                    Binding { scores.secondBlot: blotReblot2.checked }
+                                    onClicked: {
+                                        if(checked && blotGroupForScores.lastClicked == blotReblot2) {
+                                            blotGroupForScores.checkState = Qt.Unchecked
+                                            blotGroupForScores.lastClicked = null
+                                        }
+                                        else
+                                            blotGroupForScores.lastClicked = blotReblot2
+                                    }
+                                }
+                                ScoreInput { //second declarations
+                                    id: secondDeclarationsInput
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                                    minimalValue: 0
+                                    maximalValue: 200
+                                    text: { text = scores.secondDeclarations }
+                                    Binding { 
+                                        scores.secondDeclarations: secondDeclarationsInput.text
+                                        when: secondDeclarationsInput.acceptableInput
+                                    }
+                                }
+                            }
+                        }
                 }
-                ComboBox { //trump
-                    id: trumpInput
-                    Layout.fillWidth: true
-                    Layout.columnSpan: 2
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    indicator: Item{}
-                    leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
-                    font.pixelSize: Math.min(height, width) / 2.1
-                    model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
-                    currentIndex: { currentIndex = scores.trump }
-                    Binding { scores.trump: trumpInput.currentIndex }
-                }
+                Item {} //filler
             }
         }
     }
 
     footer: Column {
-        Rectangle {
+        MenuBar{
+            id: currentMenuBar
             width: appWindow.width
-            height: 5
-            color: (Universal.theme == Universal.Light ? "sky" : "steel") + "blue"
-        }
-        Rectangle {
-            width: appWindow.width
-            height: Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
-            color: appWindow.themedBlue
-        
+            height: appWindow.scoreHeight * 4 / 3
+            delegate: MenuBarItem {
+                id: menuBarItem
+                topPadding: 0
+                bottomPadding: 0
+
+                contentItem: Text {
+                    text: menuBarItem.text
+                    font.pixelSize: Math.min(parent.background.implicitHeight, parent.background.implicitWidth) / 2.6
+                    opacity: enabled ? 1.0 : 0.3
+                    color: menuBarItem.highlighted ? appWindow.backgroundColor : appWindow.textColor
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+
+                background: Rectangle {
+                    implicitWidth: currentMenuBar.width / currentMenuBar.menus.length
+                    implicitHeight: currentMenuBar.height
+                    opacity: enabled ? 1 : 0.3
+                    color: menuBarItem.highlighted ? "gray" : "transparent"
+                }
+            }
             ButtonGroup {
                 id: blotGroupForAddingScores
                 property var lastClicked: null
             }
-
-            GridLayout {
+            Menu { //first team
+                title: appWindow.firstTeamName
+                width: appWindow.width
+                bottomMargin: parent.height + generalScoreRow.height
+                GridLayout {
+                    width: parent.width
+                    height: 2 * appWindow.scoreHeight + columnSpacing
+                    columns: 3
+                    ScoreName {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: 80
+                        text: "Հավաքած միավոր"
+                    }
+                    ScoreInput { //first score
+                        id: currentFirstScore
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: appWindow.minimumScoreWidth
+                        Layout.columnSpan: 2
+                        minimalValue: 0
+                        maximalValue: 162
+                        Binding {
+                            target: currentSecondScore
+                            property: "text"
+                            value:  162 - currentFirstScore.text
+                            when: currentFirstScore.acceptableInput
+                        }
+                    }
+                    ScoreName {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: 80
+                        text: "Դրսից միավորներ"
+                    }
+                    Button { //blot reblot 1
+                        id: currentBlotReblot1
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: appWindow.minimumScoreWidth
+                        Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                        text: "Բլոտ"
+                        font.pixelSize: Math.min(height, width) / 3.5
+                        ButtonGroup.group: blotGroupForAddingScores
+                        enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
+                        onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
+                        checkable: true
+                        onClicked: {
+                            if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot1) {
+                                blotGroupForAddingScores.checkState = Qt.Unchecked
+                                blotGroupForAddingScores.lastClicked = null
+                            }
+                            else
+                                blotGroupForAddingScores.lastClicked = currentBlotReblot1
+                        }
+                    }
+                    ScoreInput { //first declarations
+                        id: currentFirstDeclarations
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: appWindow.minimumScoreWidth
+                        minimalValue: 0
+                        maximalValue: 200
+                        text: '0'
+                        onTextChanged: currentSecondDeclarations.text = '0'
+                    }
+                }
+            }
+            Menu { //declarations
+                title: "Հայտարարել ենք"
+                width: Math.max(appWindow.width / 2, 25 + 2 * appWindow.minimumScoreWidth)
+                leftInset: -appWindow.width / 6 // 1/3 - 1/2 = 1/6
+                leftPadding: -appWindow.width / 6 // for centering the popup
+                bottomMargin: parent.height + generalScoreRow.height
+                GridLayout{
+                    width: parent.width
+                    height: 2 * appWindow.scoreHeight + columnSpacing
+                    columns: 3
+                    ComboBox { //Team that declared contract
+                        id: currentTeamInput
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: appWindow.minimumScoreWidth
+                        indicator: Item{}
+                        font.pixelSize: Math.min(height, width) / 2.6
+                        Text { id: selectedTeam; text: parent.currentText; color: "transparent" } // to get size of the team's name
+                        leftPadding: (width - selectedTeam.implicitWidth) / 2 - ((width - height < 10) ? 20 : 10) // to center options
+                        model: [appWindow.firstTeamName, appWindow.secondTeamName]
+                    }
+                    Button { //capot
+                        id: currentCapotStatus
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: 25
+                        Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                        text: 'Կ'
+                        font.pixelSize: Math.min(height, width) / 2.1
+                        checkable: true
+                    }
+                    ScoreInput { //bid
+                        id: currentBid
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: appWindow.minimumScoreWidth
+                        minimalValue: 8
+                        maximalValue: 200
+                    }
+                    ComboBox { //contras
+                        id: currentModifier
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: 55
+                        indicator: Item{}
+                        leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
+                        font.pixelSize: Math.min(height, width) / 2.1
+                        model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
+                    }
+                    ComboBox { //trump
+                        id: currentTrump
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: 45
+                        Layout.columnSpan: 2
+                        indicator: Item{}
+                        leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
+                        font.pixelSize: Math.min(height, width) / 2.1
+                        model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
+                    }
+                }
+            }
+            Menu { //second team
+                title: appWindow.secondTeamName
+                width: appWindow.width
+                bottomMargin: parent.height + generalScoreRow.height
+                GridLayout {
+                    id: secondTeamInput
+                    width: parent.width
+                    height: 2 * appWindow.scoreHeight + columnSpacing
+                    columns: 3
+                    ScoreName {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: 80
+                        text: "Հավաքած միավոր"
+                    }
+                    ScoreInput { //second score
+                        id: currentSecondScore
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: appWindow.minimumScoreWidth
+                        Layout.columnSpan: 2
+                        minimalValue: 0
+                        maximalValue: 162
+                        Binding {
+                            target: currentFirstScore
+                            property: "text"
+                            value:  162 - currentSecondScore.text
+                            when: currentSecondScore.acceptableInput
+                        }
+                    }
+                    ScoreName {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: 80
+                        text: "Դրսից միավորներ"
+                    }
+                    Button { //blot reblot 2
+                        id: currentBlotReblot2
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: appWindow.minimumScoreWidth
+                        Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
+                        text: "Բլոտ"
+                        font.pixelSize: Math.min(height, width) / 3.5
+                        ButtonGroup.group: blotGroupForAddingScores
+                        enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
+                        onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
+                        checkable: true
+                        onClicked: {
+                            if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot2) {
+                                blotGroupForAddingScores.checkState = Qt.Unchecked
+                                blotGroupForAddingScores.lastClicked = null
+                            }
+                            else
+                                blotGroupForAddingScores.lastClicked = currentBlotReblot2
+                        }
+                    }
+                    ScoreInput { //second declarations
+                        id: currentSecondDeclarations
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.minimumWidth: appWindow.minimumScoreWidth
+                        minimalValue: 0
+                        maximalValue: 200
+                        text: '0'
+                        onTextChanged: currentFirstDeclarations.text = '0'
+                    }
+                }
+            }
+        }
+        Rectangle { // score row
+            id: generalScoreRow
+            width: appWindow.width
+            height: 1.5 * appWindow.scoreHeight + 10
+            color: appWindow.backColor
+            RowLayout {
                 anchors.fill: parent
-                columns: 10
-                //first row
-                ScoreInput { //first score
-                    id: currentFirstScore
-                    Layout.rowSpan: 2
+                Item {} //filler
+                Rectangle { // points accumulated by the first team
                     Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: largeScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
+                    Layout.horizontalStretchFactor: 3
+                    Layout.preferredHeight: 1.5 * appWindow.scoreHeight
                     Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    minimalValue: 0
-                    maximalValue: 162
-                    Binding {
-                        target: currentSecondScore
-                        property: "text"
-                        value:  162 - currentFirstScore.text
-                        when: currentFirstScore.acceptableInput
+                    Layout.minimumHeight: 1.5 * appWindow.minimumScoreHeight
+                    color: appWindow.frontColor
+                    radius: Math.min(width, height) / 3
+                    ScoreName { 
+                        anchors.fill: parent
+                        reduceFactor: 2.6
+                        text: appWindow.pointsAccumulated1
                     }
-                }
-                ScoreInput { //first declarations
-                    id: currentFirstDeclarations
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    minimalValue: 0
-                    maximalValue: 200
-                    text: '0'
-                    onTextChanged: currentSecondDeclarations.text = '0'
-                }
-                ScoreInput { //second score
-                    id: currentSecondScore
-                    Layout.rowSpan: 2
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: largeScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    minimalValue: 0
-                    maximalValue: 162
-                    Binding {
-                        target: currentFirstScore
-                        property: "text"
-                        value:  162 - currentSecondScore.text
-                        when: currentSecondScore.acceptableInput
-                    }
-                }
-                ScoreInput { //second declarations
-                    id: currentSecondDeclarations
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    minimalValue: 0
-                    maximalValue: 200
-                    text: '0'
-                    onTextChanged: currentFirstDeclarations.text = '0'
-                }
-                Item { //filler
-                    Layout.rowSpan: 2
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 10
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                }
-                ComboBox { //Team that declared contract
-                    id: currentTeamInput
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 55
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    indicator: Item{}
-                    font.pixelSize: Math.min(height, width) / 2.6
-                    Text { id: selectedTeam; text: parent.currentText; color: "transparent" } // to get size of the team's name
-                    leftPadding: (width - selectedTeam.implicitWidth) / 2 - ((width - height < 10) ? 20 : 10) // to center options
-                    model: ["Մենք", "Դուք"]
-                }
-                ScoreInput { //bid
-                    id: currentBid
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    minimalValue: 8
-                    maximalValue: 200
-                }
-                Button { //capot
-                    id: currentCapotStatus
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 25
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    text: 'Կ'
-                    font.pixelSize: Math.min(height, width) / 2.1
-                    checkable: true
                 }
                 RoundButton { // add button
-                    Layout.rowSpan: 2
                     Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
+                    Layout.horizontalStretchFactor: 1
                     Layout.preferredHeight: appWindow.scoreHeight
                     Layout.minimumWidth: 25
                     Layout.minimumHeight: appWindow.minimumScoreHeight
                     Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     text: '+'
                     font.pixelSize: Math.min(height, width) / 2.1
-                    highlighted: true
                     onClicked: {
                         if(currentFirstScore.acceptableInput &&
                             currentFirstDeclarations.acceptableInput &&
@@ -581,119 +858,16 @@ ApplicationWindow {
                                 "pointsWonByFirstTeam": 0,
                                 "pointsWonBySecondTeam": 0
                             })
+                            currentFirstDeclarations.text = 0
+                            currentBlotReblot1.checked  = false
+                            currentSecondDeclarations.text = 0
+                            currentBlotReblot2.checked = false
+                            currentTeamInput.currentIndex = 0
+                            currentBid.text = ""
+                            currentCapotStatus.checked = false
+                            currentModifier.currentIndex = 0
+                            currentTrump.currentIndex = 0
                         }
-                    }
-                }
-                Item { Layout.minimumWidth: 10 } // filler
-
-                //second row
-                Button { //blot reblot 1
-                    id: currentBlotReblot1
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    text: "Բլոտ"
-                    font.pixelSize: Math.min(height, width) / 3.5
-                    ButtonGroup.group: blotGroupForAddingScores
-                    enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
-                    onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
-                    checkable: true
-                    onClicked: {
-                        if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot1) {
-                            blotGroupForAddingScores.checkState = Qt.Unchecked
-                            blotGroupForAddingScores.lastClicked = null
-                        }
-                        else
-                            blotGroupForAddingScores.lastClicked = currentBlotReblot1
-                    }
-                }
-                Button { //blot reblot 2
-                    id: currentBlotReblot2
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    text: "Բլոտ"
-                    font.pixelSize: Math.min(height, width) / 3.5
-                    ButtonGroup.group: blotGroupForAddingScores
-                    enabled: currentTrump.currentIndex < 4 // enabled if there is a suit selected
-                    onEnabledChanged: if(enabled) blotGroupForAddingScores.checkState = Qt.Unchecked
-                    checkable: true
-                    onClicked: {
-                        if(checked && blotGroupForAddingScores.lastClicked == currentBlotReblot2) {
-                            blotGroupForAddingScores.checkState = Qt.Unchecked
-                            blotGroupForAddingScores.lastClicked = null
-                        }
-                        else
-                            blotGroupForAddingScores.lastClicked = currentBlotReblot2
-                    }
-                }
-                ComboBox { //contras
-                    id: currentModifier
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: smallScoreFactor
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 55
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    indicator: Item{}
-                    leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
-                    font.pixelSize: Math.min(height, width) / 2.1
-                    model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
-                }
-                ComboBox { //trump
-                    id: currentTrump
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.columnSpan: 2
-                    Layout.minimumWidth: 45
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    indicator: Item{}
-                    leftPadding: (width - font.pixelSize) / 2 - 15 // to center options
-                    font.pixelSize: Math.min(height, width) / 2.1
-                    model: ['❤️', '♠️', '♦️', '♣️', " A"] // there is a space before 'A' for somewhat correct padding
-                }
-            }
-        }
-        Rectangle{
-            width: appWindow.width
-            height: 1.5 * appWindow.scoreHeight + 10
-            color: (Universal.theme == Universal.Light ? "sky" : "steel") + "blue"
-            RowLayout {
-                anchors.fill: parent
-                
-                Item { Layout.minimumWidth: 5 } // filler
-                Rectangle { // points accumulated by the first team
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: 3
-                    Layout.preferredHeight: 1.5 * appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: 1.5 * appWindow.minimumScoreHeight
-                    color: (Universal.theme == Universal.Dark ? "sky" : "steel") + "blue"
-                    radius: Math.min(width, height) / 3
-                    ScoreName { 
-                        anchors.fill: parent
-                        reduceFactor: 2.6
-                        text: appWindow.pointsAccumulated1
-                    }
-                }
-                Rectangle { // points accumulated by the second team
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: 3
-                    Layout.preferredHeight: 1.5 * appWindow.scoreHeight
-                    Layout.minimumWidth: appWindow.minimumScoreWidth
-                    Layout.minimumHeight: 1.5 * appWindow.minimumScoreHeight
-                    color: (Universal.theme == Universal.Dark ? "sky" : "steel") + "blue"
-                    radius: Math.min(width, height) / 3
-                    ScoreName { 
-                        anchors.fill: parent
-                        reduceFactor: 2.6
-                        text: appWindow.pointsAccumulated2
                     }
                 }
                 RoundButton { // remove button
@@ -705,135 +879,27 @@ ApplicationWindow {
                     Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
                     text: '-'
                     font.pixelSize: Math.min(height, width) / 2.1
-                    onClicked: gameModel.remove(gameModel.count - 1)
+                    onClicked: {
+                        appWindow.pointsAccumulated1 -= gameModel.get(gameModel.count - 1).pointsWonByFirstTeam
+                        appWindow.pointsAccumulated2 -= gameModel.get(gameModel.count - 1).pointsWonBySecondTeam
+                        gameModel.remove(gameModel.count - 1)
+                    }
                 }
-                RoundButton { // help button
+                Rectangle { // points accumulated by the second team
                     Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: 1
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 25
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    icon.source: "icons/question.png"
-                    icon.width: width
-                    icon.height: height
-                    font.pixelSize: Math.min(height, width) / 2.1
-                    onClicked: helpPage.open()
-                    Popup {
-                        id: helpPage
-                        width: appWindow.width - parent.width * 2
-                        height: appWindow.height - parent.height
-                        x: -width
-                        y: -height
-                        ScrollView{
-                            anchors.fill: parent
-                            font.pixelSize: Math.min(width, height) / 20
-                            TextArea {
-                                anchors.fill: parent
-                                onFocusChanged: focus = false
-                                selectByMouse: false
-                                readOnly: true
-                                background: Item{}
-                                text: "Մուտքագրեք որևէ թմի հավաքած սաիները (0-ից 162) ներքևի հատվածում։\n" + //really unproffesional, I know
-                                      "Նշեք թե ինչ ունեք դրսից(չհաշված բլոտ-ռեբլոտ)։\n" +
-                                      "Նշեք որ թիմն է խոսասացել իր մաանրամասներով։\n"+
-                                      "Այնուհետև սեղմեք '+' կոճակին խաղը ավելացնելու համար։\n"+
-                                      "Կարող եք հեռացնել վերջին խաղը '-' կոճակով։\n\n"+
-
-                                      "Յուրաքանչյուր խաղի տվյալները կարելի է փոխել ավելացնելուց հետո,\n"+
-                                      "ուղղակի սեղմեք համապատասխան դաշտի վրա։\n"+
-                                      "Խաղի ընդհանուր հաշիվը ցույց է տրված ներքևի 2 դաշտերում։\n"
-                                wrapMode: TextArea.WordWrap
-                            }
-                        }
+                    Layout.horizontalStretchFactor: 3
+                    Layout.preferredHeight: 1.5 * appWindow.scoreHeight
+                    Layout.minimumWidth: appWindow.minimumScoreWidth
+                    Layout.minimumHeight: 1.5 * appWindow.minimumScoreHeight
+                    color: appWindow.frontColor
+                    radius: Math.min(width, height) / 3
+                    ScoreName { 
+                        anchors.fill: parent
+                        reduceFactor: 2.6
+                        text: appWindow.pointsAccumulated2
                     }
                 }
-                RoundButton { // settings button
-                    Layout.fillWidth: true
-                    Layout.horizontalStretchFactor: 1
-                    Layout.preferredHeight: appWindow.scoreHeight
-                    Layout.minimumWidth: 25
-                    Layout.minimumHeight: appWindow.minimumScoreHeight
-                    Layout.maximumWidth: Math.max(height, Layout.minimumWidth)
-                    icon.source: "icons/settings.png"
-                    icon.width: width
-                    icon.height: height
-                    font.pixelSize: Math.min(height, width) / 2.1
-                    onClicked: settingsMenu.open()
-                    Popup {
-                        id: settingsMenu
-                        width: Math.max(appWindow.width / 5, 150)
-                        height: Math.max(appWindow.height / 2, 200)
-                        x: -width
-                        y: -height
-                        font.pixelSize: Math.min(width, height) / 15
-                        ColumnLayout {
-                            anchors.fill: parent
-                            TextField {
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                Layout.horizontalStretchFactor: 1
-                                onFocusChanged: focus = false
-                                selectByMouse: false
-                                readOnly: true
-                                background: Item{}
-                                text: "Գունային ռեժիմ`" 
-                                horizontalAlignment: TextInput.AlignLeft
-                                wrapMode: TextInput.WordWrap
-                            }
-                            ColumnLayout {
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                Layout.horizontalStretchFactor: 4
-                                RadioButton {
-                                    id: lightThemeButton
-                                    Layout.fillWidth: true
-                                    text: "Բաց"
-                                    checked: settings.appTheme == Universal.Light
-                                    onClicked: appWindow.currentTheme = Universal.Light
-                                }
-                                RadioButton {
-                                    id: darkThemeButton
-                                    Layout.fillWidth: true
-                                    text: "Մուգ"
-                                    checked: settings.appTheme == Universal.Dark
-                                    onClicked: appWindow.currentTheme = Universal.Dark
-                                }
-                                RadioButton {
-                                    id: systemThemeButton
-                                    Layout.fillWidth: true
-                                    text: "Ներքին"
-                                    checked: settings.appTheme == Universal.System
-                                    onClicked: appWindow.currentTheme = Universal.System
-                                }
-                            }
-                            Switch {
-                                id: noTrump2xSwitch
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                Layout.horizontalStretchFactor: 1
-                                text: "A 2×" 
-                                ToolTip.visible: hovered
-                                ToolTip.text: "Անղոզ խաղի ժամանակ կրկնակի շատ միավոր"
-                                checked: settings.noTrump2x
-                            }
-                        }
-                    }
-                    Settings {
-                        id: settings
-                        property int appTheme: Universal.System
-                        property bool noTrump2x: false
-                    }
-                    Component.onDestruction: {
-                        if(lightThemeButton.checked)
-                            settings.appTheme = Universal.Light
-                        if(darkThemeButton.checked)
-                            settings.appTheme = Universal.Dark
-                        if(systemThemeButton.checked)
-                            settings.appTheme = Universal.System
-                        settings.noTrump2x = noTrump2xSwitch.checked
-                    }
-                }
+                Item {} //filler
             }
         }
     }
