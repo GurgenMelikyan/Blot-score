@@ -64,9 +64,9 @@ ApplicationWindow {
                                 selectByMouse: false
                                 readOnly: true
                                 background: Item{}
-                                text: "Մուտքագրեք որևէ թմի հավաքած սաիները (0-ից 162) ներքևի հատվածում։\n" + //really unproffesional, I know
+                                text: "Մուտքագրեք թմերի հավաքած սաիները (0-ից 162) համապատասխան դաշտերում։\n" + //really unproffesional, I know
                                       "Նշեք թե ինչ ունեք դրսից(չհաշված բլոտ-ռեբլոտ)։\n" +
-                                      "Նշեք որ թիմն է խոսասացել իր մաանրամասներով։\n"+
+                                      "<<Հայտարարել են>> բաժնում նշեք որ թիմն է խոսասացել իր մաանրամասներով։\n"+
                                       "Այնուհետև սեղմեք '+' կոճակին խաղը ավելացնելու համար։\n"+
                                       "Կարող եք հեռացնել վերջին խաղը '-' կոճակով։\n\n"+
 
@@ -674,7 +674,7 @@ ApplicationWindow {
                 }
             }
             Menu { //declarations
-                title: "Հայտարարել ենք"
+                title: "Հայտարարել են"
                 width: Math.max(appWindow.width / 2, 25 + 2 * appWindow.minimumScoreWidth)
                 leftInset: -appWindow.width / 6 // 1/3 - 1/2 = 1/6
                 leftPadding: -appWindow.width / 6 // for centering the popup
