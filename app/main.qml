@@ -247,7 +247,8 @@ ApplicationWindow {
                     trump2x = 1
 
                 if(teamThatDeclaredContract == 0)
-                    if(firstScore == 0 || (firstScore == 162 ? 250 : firstScore) < (bid - firstDeclarations - firstBlot * 2) * 10 || isCapot) { //first team lost
+                    if(firstScore == 0 || (firstScore == 162 ? 250 : firstScore) < (bid - firstDeclarations - firstBlot * 2) * 10 ||
+                    (isCapot && firstScore < 162)) { //first team lost
                         pointsWon1 = firstBlot * 2
                         pointsWon2 = 16 + bid * modifier * trump2x + firstDeclarations + secondDeclarations + secondBlot * 2
                     }
@@ -257,7 +258,8 @@ ApplicationWindow {
                         pointsWon2 = secondBlot * 2 + (modifier > 1 ? 0 : roundPoints(secondScore, false) + secondDeclarations)
                     }
                 else
-                    if(secondScore == 0 || (secondScore == 162 ? 250 : secondScore) < (bid - secondDeclarations - secondBlot * 2) * 10 || isCapot) {//second team lost
+                    if(secondScore == 0 || (secondScore == 162 ? 250 : secondScore) < (bid - secondDeclarations - secondBlot * 2) * 10 ||
+                    (isCapot && secondScore < 162)) {//second team lost
                         pointsWon1 = 16 + bid * modifier * trump2x + secondDeclarations + firstDeclarations + firstBlot * 2
                         pointsWon2 = secondBlot * 2
                     }
