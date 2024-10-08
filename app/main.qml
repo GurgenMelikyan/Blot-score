@@ -282,6 +282,12 @@ ApplicationWindow {
                 appWindow.pointsAccumulated2 += pointsWonBySecondTeam
                 pointsWon2 = pointsWonBySecondTeam
             }
+
+            Component.onDestruction: {
+                appWindow.pointsAccumulated1 -= pointsWonByFirstTeam
+                appWindow.pointsAccumulated2 -= pointsWonBySecondTeam
+            }
+
             RowLayout{
                 height: parent.height
                 width: parent.width
@@ -880,8 +886,6 @@ ApplicationWindow {
                     text: '-'
                     font.pixelSize: Math.min(height, width) / 2.1
                     onClicked: {
-                        appWindow.pointsAccumulated1 -= gameModel.get(gameModel.count - 1).pointsWonByFirstTeam
-                        appWindow.pointsAccumulated2 -= gameModel.get(gameModel.count - 1).pointsWonBySecondTeam
                         gameModel.remove(gameModel.count - 1)
                     }
                 }
