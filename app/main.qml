@@ -29,15 +29,6 @@ ApplicationWindow {
     property string backColor: Universal.theme == Universal.Light ? "darkgray" : "dimgray"
     property string frontColor: Universal.theme == Universal.Light ? "lightgray" : "gray"
     
-    MouseArea { // for all items to lose focus when clicked outside
-        anchors.fill: parent
-        z: 10
-        propagateComposedEvents: true
-        onClicked: (mouse)=> {
-            focus = true
-            mouse.accepted = false
-        }
-    }
     ListModel {
         id: gameModel
     }
@@ -207,6 +198,15 @@ ApplicationWindow {
         anchors.fill: parent
         spacing: 15
         model: gameModel
+        MouseArea { // for all items to lose focus when clicked outside
+            anchors.fill: parent
+            z: 10
+            propagateComposedEvents: true
+            onClicked: (mouse)=> {
+                forceActiveFocus()
+                mouse.accepted = false
+            }
+        }
         delegate: Item {
             id: scores
             required property int firstScore
