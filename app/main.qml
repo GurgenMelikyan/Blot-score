@@ -404,8 +404,8 @@ ApplicationWindow {
                             let declaration = ""
                             declaration += bidInput.text + (capotInput.checked ? 'K' : '')
                             switch(contrasInput.currentIndex) {
-                                case 1: declaration += 'Ք'; break
-                                case 2: declaration += 'Ս'
+                                case 1: declaration += 'Q'; break
+                                case 2: declaration += 'S'
                             }
                             switch(trumpInput.currentIndex) {
                                 case 0: declaration += '❤️'; break
@@ -476,7 +476,7 @@ ApplicationWindow {
                                     indicator: Item{}
                                     leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
                                     font.pixelSize: Math.min(height, width) / 2.1
-                                    model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
+                                    model: [" -", " Q", " S"] // there are some spaces for somewhat correct padding
                                     currentIndex: { currentIndex = Math.log2(scores.modifier) }
                                     Binding { scores.modifier: Math.pow(2, contrasInput.currentIndex) }
                                 }
@@ -737,7 +737,7 @@ ApplicationWindow {
                         indicator: Item{}
                         leftPadding: (width - font.pixelSize) / 2 - 13 // to center options
                         font.pixelSize: Math.min(height, width) / 2.1
-                        model: [" -", " Ք", " Ս"] // there are some spaces for somewhat correct padding
+                        model: [" -", " Q", " S"] // there are some spaces for somewhat correct padding
                     }
                     ComboBox { //trump
                         id: currentTrump
