@@ -12,6 +12,8 @@ Item {
         id: name
         anchors.fill: parent
         onFocusChanged: if(!editable) focus = false
+        onAccepted: focus = false
+        onActiveFocusChanged: if(!activeFocus) focus = false
         selectByMouse: parent.editable
         readOnly: !parent.editable
         background: Item{}

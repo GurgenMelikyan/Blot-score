@@ -28,7 +28,16 @@ ApplicationWindow {
     property string textColor: Universal.theme == Universal.Light ? "black" : "white"
     property string backColor: Universal.theme == Universal.Light ? "darkgray" : "dimgray"
     property string frontColor: Universal.theme == Universal.Light ? "lightgray" : "gray"
-
+    
+    MouseArea { // for all items to lose focus when clicked outside
+        anchors.fill: parent
+        z: 10
+        propagateComposedEvents: true
+        onClicked: {
+            focus = true
+            mouse.accepted = false
+        }
+    }
     ListModel {
         id: gameModel
     }
@@ -594,7 +603,7 @@ ApplicationWindow {
 
                 contentItem: Text {
                     text: menuBarItem.text
-                    font.pixelSize: Math.min(parent.background.implicitHeight, parent.background.implicitWidth) / 2.6
+                    font.pixelSize: Math.min(parent.background.implicitHeight, parent.background.implicitWidth) / 3
                     opacity: enabled ? 1.0 : 0.3
                     color: menuBarItem.highlighted ? appWindow.backgroundColor : appWindow.textColor
                     horizontalAlignment: Text.AlignHCenter

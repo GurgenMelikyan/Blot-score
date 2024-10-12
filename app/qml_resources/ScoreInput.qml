@@ -17,4 +17,6 @@ TextField {
     horizontalAlignment: TextField.AlignHCenter
     verticalAlignment: TextField.AlignVCenter
     validator: IntValidator{bottom: minimalValue; top: maximalValue}
+    onAccepted: focus = false
+    onActiveFocusChanged: if(!activeFocus) focus = false
 }
