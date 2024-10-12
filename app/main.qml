@@ -33,7 +33,7 @@ ApplicationWindow {
         anchors.fill: parent
         z: 10
         propagateComposedEvents: true
-        onClicked: {
+        onClicked: (mouse)=> {
             focus = true
             mouse.accepted = false
         }
