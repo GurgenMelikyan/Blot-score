@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 project(app LANGUAGES CXX)
 
 include(qt.cmake)
@@ -31,12 +31,17 @@ if(QT_VERSION VERSION_GREATER_EQUAL 6.2)
         QML_FILES
             main.qml qml_resources/ScoreInput.qml qml_resources/ScoreName.qml
         RESOURCES icons/question.png icons/settings.png
+        RESOURCES ../android/AndroidManifest.xml ../android/build.gradle ../android/res/values/libs.xml ../android/res/xml/qtprovider_paths.xml ../android/gradle/wrapper/gradle-wrapper.jar ../android/gradle/wrapper/gradle-wrapper.properties ../android/gradle.properties ../android/gradlew ../android/gradlew.bat
     )
 endif()
 
 set_target_properties(app
     PROPERTIES
         WIN32_EXECUTABLE TRUE
+)
+
+set_property(TARGET app APPEND PROPERTY
+    QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_SOURCE_DIR}/android
 )
 
 target_link_libraries(app
