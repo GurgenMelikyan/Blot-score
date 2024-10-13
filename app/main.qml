@@ -78,7 +78,7 @@ ApplicationWindow {
                         }
                     }
                 }
-                ScoreName {
+                ScoreName { // first team name
                     id: firstTeamNameInput
                     Layout.fillWidth: true
                     Layout.preferredHeight: 2 * appWindow.scoreHeight
@@ -90,12 +90,12 @@ ApplicationWindow {
                         appWindow.firstTeamName: firstTeamNameInput.text
                     }
                 }
-                Rectangle {
+                Rectangle { // separator
                     Layout.preferredWidth: 1
                     Layout.fillHeight: true
                     color: Universal.theme == Universal.Light ? "dimgray" : "darkgray"
                 }
-                ScoreName {
+                ScoreName { // second team name
                     id: secondTeamNameInput
                     Layout.fillWidth: true
                     Layout.preferredHeight: 2 * appWindow.scoreHeight
@@ -342,12 +342,12 @@ ApplicationWindow {
                                     maximalValue: 162
                                     text: { text = scores.firstScore }
                                     Binding {
-                                        scores.firstScore: firstScoreInput.text
-                                        when: firstScoreInput.acceptableInput
+                                        scores.firstScore: firstScoreInput.text == "" ? 0 : firstScoreInput.text
+                                        when: firstScoreInput.acceptableInput || firstScoreInput.text == ""
                                     }
                                     Binding {
-                                        secondScoreInput.text:  162 - firstScoreInput.text
-                                        when: firstScoreInput.acceptableInput
+                                        secondScoreInput.text:  162 - (firstScoreInput.text == "" ? 0 : firstScoreInput.text)
+                                        when: firstScoreInput.acceptableInput || firstScoreInput.text == ""
                                     }
                                 }
                                 ScoreName {
@@ -387,14 +387,14 @@ ApplicationWindow {
                                     maximalValue: 200
                                     text: { text = scores.firstDeclarations }
                                     Binding { 
-                                        scores.firstDeclarations: firstDeclarationsInput.text
-                                        when: firstDeclarationsInput.acceptableInput
+                                        scores.firstDeclarations: firstDeclarationsInput.text == "" ? 0 : firstDeclarationsInput.text
+                                        when: firstDeclarationsInput.acceptableInput || firstDeclarationsInput.text == ""
                                     }
                                 }
                             }
                         }
                 }
-                ScoreName { //declarations
+                ScoreName { // declarations
                         height: parent.height
                         widthForPixelSize: appWindow.width / 3
                         reduceFactor: 3.5
@@ -534,12 +534,12 @@ ApplicationWindow {
                                     maximalValue: 162
                                     text: { text = scores.secondScore }
                                     Binding {
-                                        scores.secondScore: secondScoreInput.text
-                                        when: secondScoreInput.acceptableInput
+                                        scores.secondScore: secondScoreInput.text == "" ? 0 : secondScoreInput.text
+                                        when: secondScoreInput.acceptableInput || secondScoreInput.text == ""
                                     }
                                     Binding {
-                                        firstScoreInput.text: 162 - secondScoreInput.text
-                                        when: secondScoreInput.acceptableInput
+                                        firstScoreInput.text: 162 - (secondScoreInput.text == "" ? 0 : secondScoreInput.text)
+                                        when: secondScoreInput.acceptableInput || secondScoreInput.text == ""
                                     }
                                 }
                                 ScoreName {
@@ -579,8 +579,8 @@ ApplicationWindow {
                                     maximalValue: 200
                                     text: { text = scores.secondDeclarations }
                                     Binding { 
-                                        scores.secondDeclarations: secondDeclarationsInput.text
-                                        when: secondDeclarationsInput.acceptableInput
+                                        scores.secondDeclarations: secondDeclarationsInput.text == "" ? 0 : secondDeclarationsInput.text
+                                        when: secondDeclarationsInput.acceptableInput || secondDeclarationsInput.text == ""
                                     }
                                 }
                             }
@@ -622,7 +622,7 @@ ApplicationWindow {
                 id: blotGroupForAddingScores
                 property var lastClicked: null
             }
-            Menu { //first team
+            Menu { // first team
                 title: appWindow.firstTeamName
                 width: appWindow.width
                 bottomMargin: parent.height + generalScoreRow.height
@@ -647,8 +647,8 @@ ApplicationWindow {
                         Binding {
                             target: currentSecondScore
                             property: "text"
-                            value:  162 - currentFirstScore.text
-                            when: currentFirstScore.acceptableInput
+                            value:  162 - (currentFirstScore.text == "" ? 0 : currentFirstScore.text)
+                            when: currentFirstScore.acceptableInput || currentFirstScore.text == ""
                         }
                     }
                     ScoreName {
@@ -690,7 +690,7 @@ ApplicationWindow {
                     }
                 }
             }
-            Menu { //declarations
+            Menu { // declarations
                 title: "Հայտարարել են"
                 width: Math.max(appWindow.width / 2, 25 + 2 * appWindow.minimumScoreWidth)
                 leftInset: -appWindow.width / 6 // 1/3 - 1/2 = 1/6
@@ -752,7 +752,7 @@ ApplicationWindow {
                     }
                 }
             }
-            Menu { //second team
+            Menu { // second team
                 title: appWindow.secondTeamName
                 width: appWindow.width
                 bottomMargin: parent.height + generalScoreRow.height
@@ -778,8 +778,8 @@ ApplicationWindow {
                         Binding {
                             target: currentFirstScore
                             property: "text"
-                            value:  162 - currentSecondScore.text
-                            when: currentSecondScore.acceptableInput
+                            value:  162 - (currentSecondScore.text == "" ? 0 : currentSecondScore.text)
+                            when: currentSecondScore.acceptableInput || currentSecondScore.text == ""
                         }
                     }
                     ScoreName {
@@ -829,7 +829,7 @@ ApplicationWindow {
             color: appWindow.backColor
             RowLayout {
                 anchors.fill: parent
-                Item {} //filler
+                Item {} // filler
                 Rectangle { // points accumulated by the first team
                     Layout.fillWidth: true
                     Layout.horizontalStretchFactor: 3
@@ -914,7 +914,7 @@ ApplicationWindow {
                         text: appWindow.pointsAccumulated2
                     }
                 }
-                Item {} //filler
+                Item {} // filler
             }
         }
     }
