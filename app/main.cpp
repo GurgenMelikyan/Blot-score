@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
     app.setApplicationName("Բլոտի հաշիվ");
-    app.setOrganizationName("Gurgen Melikyan");
+    app.setOrganizationName("blot score");
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/qt/qml/app/main.qml")));
     if (engine.rootObjects().isEmpty())
