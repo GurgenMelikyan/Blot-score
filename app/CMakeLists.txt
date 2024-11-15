@@ -30,7 +30,7 @@ if(QT_VERSION VERSION_GREATER_EQUAL 6.2)
         RESOURCE_PREFIX "/qt/qml/"
         QML_FILES
             main.qml qml_resources/ScoreInput.qml qml_resources/ScoreName.qml
-        RESOURCES icons/question.png icons/settings.png
+        RESOURCES dark_notepaper.png notepaper.png icons/question.png icons/settings.png
         RESOURCES ../android/AndroidManifest.xml ../android/build.gradle ../android/res/values/libs.xml ../android/res/xml/qtprovider_paths.xml ../android/gradle/wrapper/gradle-wrapper.jar ../android/gradle/wrapper/gradle-wrapper.properties ../android/gradle.properties ../android/gradlew ../android/gradlew.bat
     )
 endif()

@@ -26,16 +26,19 @@ ApplicationWindow {
     property int currentTheme: settings.appTheme
     property string backgroundColor: Universal.theme == Universal.Light ? "white" : "black"
     property string textColor: Universal.theme == Universal.Light ? "black" : "white"
-    property string backColor: Universal.theme == Universal.Light ? "darkgray" : "dimgray"
-    property string frontColor: Universal.theme == Universal.Light ? "lightgray" : "gray"
-    
+    property string backColor: Universal.theme == Universal.Light ? "darkgray" : "#303030"
+    property string frontColor: Universal.theme == Universal.Light ? "lightgray" : "dimgray"
+    background: Image {
+        source: Universal.theme == Universal.Light ? "notepaper.png" : "dark_notepaper.png"
+    }
+
     ListModel {
         id: gameModel
     }
     header:  Column { Rectangle {
         width: appWindow.width
         height: 5 + Math.max(2 * appWindow.scoreHeight, 2 * appWindow.minimumScoreHeight)
-        color: appWindow.backColor
+        color: "transparent"
         RowLayout {
                 anchors.fill: parent
                 RoundButton { // help button
@@ -47,6 +50,10 @@ ApplicationWindow {
                     icon.source: "icons/question.png"
                     icon.width: width
                     icon.height: height
+                    background: Rectangle{
+                        radius: parent.radius
+                        color: appWindow.backgroundColor
+                    }
                     font.pixelSize: Math.min(height, width) / 2.1
                     onClicked: helpPage.open()
                     Popup {
@@ -64,9 +71,9 @@ ApplicationWindow {
                                 selectByMouse: false
                                 readOnly: true
                                 background: Item{}
-                                text: "Մուտքագրեք թմերի հավաքած սաիները (0-ից 162) համապատասխան դաշտերում։\n" + //really unproffesional, I know
+                                text: "Մուտքագրեք թիմերի հավաքած սաիները (0-ից 162) համապատասխան դաշտերում։\n" + //really unproffesional, I know
                                       "Նշեք թե ինչ ունեք դրսից(չհաշված բլոտ-ռեբլոտ)։\n" +
-                                      "<<Հայտարարել են>> բաժնում նշեք որ թիմն է խոսասացել իր մաանրամասներով։\n"+
+                                      "<<Հայտարարել են>> բաժնում նշեք որ թիմն է խոսացել իր մանրամասներով։\n"+
                                       "Այնուհետև սեղմեք '+' կոճակին խաղը ավելացնելու համար։\n"+
                                       "Կարող եք հեռացնել վերջին խաղը '-' կոճակով։\n\n"+
 
@@ -92,7 +99,7 @@ ApplicationWindow {
                 }
                 Rectangle { // separator
                     Layout.preferredWidth: 1
-                    Layout.fillHeight: true
+                    Layout.preferredHeight: 1.5 * appWindow.scoreHeight
                     color: Universal.theme == Universal.Light ? "dimgray" : "darkgray"
                 }
                 ScoreName { // second team name
@@ -116,6 +123,10 @@ ApplicationWindow {
                     icon.source: "icons/settings.png"
                     icon.width: width
                     icon.height: height
+                    background: Rectangle{
+                        radius: parent.radius
+                        color: appWindow.backgroundColor
+                    }
                     font.pixelSize: Math.min(height, width) / 2.1
                     onClicked: settingsMenu.open()
                     Popup {
@@ -193,7 +204,7 @@ ApplicationWindow {
                     }
                 }
         }
-        } Rectangle { width: appWindow.width; height: 20; color: appWindow.backgroundColor} }
+        } Rectangle { width: appWindow.width; height: 20; color: "transparent"} }
     ListView {
         anchors.fill: parent
         spacing: 15
@@ -309,7 +320,7 @@ ApplicationWindow {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         radius: Math.min(width, height) / 3
-                        color: appWindow.frontColor
+                        color: "transparent"
                         ScoreName {
                             anchors.fill: parent
                             text: "+" + scores.pointsWonByFirstTeam
@@ -501,7 +512,7 @@ ApplicationWindow {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         radius: Math.min(width, height) / 3
-                        color: appWindow.frontColor
+                        color: "transparent"
                         ScoreName {
                             anchors.fill: parent
                             text: "+" + scores.pointsWonBySecondTeam
